@@ -269,7 +269,7 @@ def solve1(request):
             received_data = request.session.get("json")
             print(received_data)
              # Make an API POST request to solve puzzle
-            response = requests.post("https://ujjwal123-ez-crossword.hf.space/solve", json=received_data)
+            response = requests.post("https://ujjwal123-ez-crossword.hf.space/solve", json=received_data,timeout= 100)
         else:
             # Upadating session after receiving modified clues and grid
             rows,across_clues,down_clues = get_rows_and_clues(received_data)
@@ -278,7 +278,7 @@ def solve1(request):
             request.session['down_clues'] = down_clues
             request.session['json'] = received_data
 
-            response = requests.post("https://ujjwal123-ez-crossword.hf.space/solve", json=received_data)
+            response = requests.post("https://ujjwal123-ez-crossword.hf.space/solve", json=received_data,timeout=100)
     
         if response.status_code == 200:
             data = response.json()
