@@ -26,7 +26,7 @@
     ],
     "functions": {
       "static/js/*.js": {
-        "maxDuration": 60
+        "maxDuration": 30
       }
     }
   }
