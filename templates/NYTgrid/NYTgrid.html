@@ -1,0 +1,42 @@
+
+{% extends 'NYTgrid/base.html' %}
+{% comment %} data comes as a context {% endcomment %}
+
+{% block hero %}
+    <div class="crossword">
+        <div class="grid">
+              {% for row_data in grid_rows %}
+                <div class="grid-row">
+                    {% for num,data in row_data %}
+                        {% if data == "." %}
+                            <div class="grid-cell dead-cell"></div>
+                        {% else %}
+                            <div class="grid-cell">
+                                <div class="cell-num">
+                                    {% if num != 0 %} {{num}}{% endif %}
+                                </div>
+                                <div class="cell-data"> {{data}}</div>
+                            </div>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+              
+              {% endfor %}
+        </div>
+        <div class="clues">
+            <div class="across-clues">
+                <div class="clue-head-title"> Across </div>
+                {% for clue in across_clues %}
+                    <span class="across-clue"> {{clue|safe}}</span>
+                {% endfor %}
+            </div>
+            <div class="down-clues">
+                <div class="clue-head-title"> Down </div>
+                {% for clue in down_clues %}
+                    <span class="down-clue"> {{clue|safe}}</span>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+{% endblock hero %}

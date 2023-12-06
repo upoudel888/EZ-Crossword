@@ -1,0 +1,87 @@
+{% extends 'Solver/solver.html' %}
+{% load static %}
+
+{% block css %}
+    <link rel="stylesheet" href= {%static "css/verify.css" %}>
+{% endblock css %}
+
+{% block script %}
+    <script src={% static 'js/crossword.js' %}  type="module" defer></script>
+    <script src= {%static "js/modify-grid.js"%} type="module" defer></script>
+{% endblock script %}
+
+{% block hero %}
+    <div class="note-ribbon">
+        <div class="special-note">
+            <span class="emphasis-text"> Validation </span> <br> <br>
+            Please validate and correct the detections before proceeding to generate solution. <br><br>
+            <button class="custom-btn proceed-button btn-11">Proceed</button>
+        </div>
+        <span class="note"> <span class = 'bold'>Note : </span> 
+        Click on grid cells to toggle the color. <br>
+        Edit clues in the text area.
+        </span> 
+    </div>
+    
+    <div class="crossword">
+        <div class="grid-and-options">
+            <div class="grid">
+                {% for row_data in grid_rows %}
+                <div class="grid-row">
+                    {% for num,data,sol in row_data %}
+                        {% if data == "." %}
+                        <div class="grid-cell dead-cell">
+                            <div class="cell-num"></div>
+                            <div class="cell-data"></div>
+                        </div>
+                        {% else %}
+                            <div class="grid-cell" >
+                                <div class="cell-num">
+                                    {% if num != 0 %} {{num}}{% endif %}
+                                </div>
+                                <div class="cell-data"></div>
+                            </div>
+                        {% endif %}
+                    {% endfor %}
+                </div>     
+                {% endfor %}
+            </div>
+            
+            {% comment %} bouttons {% endcomment %}
+            <div class="grid-change-options">
+                <div class="change-option">
+                    <div class="btn decrease-button"><i class="fa-solid fa-minus"></i></div>
+                    <div class="dim-info button-info">{{grid_rows|length}} X {{grid_rows|length}}</div>
+                    <div class="btn increase-button"><i class="fa-solid fa-plus"></i></div>   
+                </div>
+                <div class="change-option">
+                    <div class="btn rot-left-button"><i class="fa-solid fa-rotate-left"></i></div>
+                    <div class="rot-info button-info">Rotate 90&deg;</div>
+                    <div class="btn rot-right-button"><i class="fa-solid fa-rotate-right"></i></div>   
+                </div>
+                <div class="btn erase-button"><i class="fa-sharp fa-solid fa-trash"></i></div>
+            </div>
+        </div>
+        {% comment %} clues {% endcomment %}
+        <div class="clues">
+            <div class="across-clues">
+                <div class="clue-head-title" > Across </div>
+                {% for num,clue in across_clues %}
+                    <div class="across-clue across-clue-{{num}}">
+                        <div class="clue-num"> {{num}} </div>
+                        <div class="clue-text" contenteditable> {{clue|safe}} </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                <div class="down-clues">
+                    <div class="clue-head-title" > Down </div>
+                    {% for num,clue in down_clues %}
+                        <div class="down-clue down-clue-{{num}}">
+                            <div class="clue-num"> {{num}} </div>
+                            <div class="clue-text" contenteditable> {{clue|safe}} </div>
+                        </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+{% endblock hero %}

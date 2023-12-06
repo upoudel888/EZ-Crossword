@@ -1,0 +1,47 @@
+{% extends 'Home/base.html' %}
+{% load static %}
+
+{% block css %}
+    <link rel="stylesheet" href={% static "css/solver.css"%}>
+{% endblock css %}
+
+
+{% block hero %}
+<div class="get-started">
+    <h1 class="emphasis-text">Solve Crosswords Using AI.</h1>
+    <span class="">Upload Files to Get Started</span>
+</div>
+<div class="solver-hero">
+    <div class="solver-upload-info">
+        <img src={% static 'images/crossword-illus.jpeg'%} class = "solver-illus" alt="Crossword Solver Illustration">
+        <div class="upload-format">
+            <div class="format-card">
+                <img src={% static "images/img.svg"%} alt="crossword-logo" class="icon"><span class="">Images</span>
+            </div>
+            <div class="format-card">
+                <img src={% static "images/json.svg"%} alt="crossword-logo" class="icon"><span class=""> JSON Files</span> 
+            </div>
+            <div class="format-card">
+                <img src={% static "images/puz.svg"%} alt="crossword-logo" class="icon"><span class="">.PUZ Files</span> 
+            </div>
+        </div>
+    </div>
+    <div class="form-container">     
+        <form action = "/solver/" class = "form-inner" method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            
+            <label for="images" class="drop-container" id="dropcontainer">
+                <span class=" drop-title bold">Drop files here</span>
+                or
+                <input type="file" id="images" name="crossword_file" accept=".jpg, .jpeg, .png, .json, .puz" required>
+            </label>
+            
+            <button class="custom-btn btn-11">Upload</button>
+        </form>
+    </div>
+</div>
+{% endblock hero %}
+
+{% block script %}
+    <script src={% static "js/drag-drop.js"%} defer></script>
+{% endblock script %}

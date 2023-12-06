@@ -1,0 +1,186 @@
+.nav-links ul li:nth-child(n) a{
+    border-bottom: none;
+}
+.nav-links ul li:nth-child(2) a{
+    border-bottom: 3px solid black;
+}
+
+.get-started{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin-top: 2rem;
+}
+
+.emphasis-text{
+    font-size: var(--font-size-logo);
+    border-bottom: 2px solid white;
+    font-weight: bold;
+}
+
+.solver-hero{
+    flex-grow: 1;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-evenly;
+    flex-wrap: wrap;
+}
+
+.solver-upload-info{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+.upload-format{
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    left: -2rem;
+    z-index: 1;
+    color: var(--secondary-blue);
+    width:5rem;
+    gap: 2rem;
+}
+.format-card{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+img.solver-illus{
+    width: 30rem;
+    height: 30rem;
+}
+
+
+/* https://codepen.io/sosuke/pen/Pjoqqp */
+img.icon{
+    width: 1.6rem;
+    height: 1.6rem;
+    filter: invert(51%) sepia(39%) saturate(4395%) hue-rotate(202deg) brightness(100%) contrast(96%);
+}
+
+
+.form-container{
+    /* flex-grow: 1; */
+    border: 1px solid var(--light-gray);
+    border-radius: 10px;
+    padding: 1rem;
+    width: 23rem;
+    height: 25rem;
+    background-color: var(--secondary-blue);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    /* box-shadow: rgba(60, 64, 67, 0.3) 0px 1px 2px 0px, rgba(60, 64, 67, 0.15) 0px 1px 3px 1px; */
+    box-shadow: rgba(17, 17, 26, 0.1) 0px 4px 16px, rgba(17, 17, 26, 0.1) 0px 8px 24px, rgba(17, 17, 26, 0.1) 0px 16px 56px;
+}
+
+
+.form-inner{
+    width: 100%;
+    height: 100%;
+    background-color: var(--light-white); 
+    box-shadow: 0 0 4px #2860d8;
+    border-radius: 5px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-around;
+    gap: 0.5rem;
+    padding: 0.5rem;
+}
+
+input[type="file" i]{
+    /* transform: translateX(2rem); */
+}
+
+input[type=file]::file-selector-button {
+    margin-right: 20px;
+    border: none;
+    background: var(--secondary-blue);
+    padding: 10px 20px;
+    border-radius: 5px;
+    color: #fff;
+    cursor: pointer;
+    transition: background .2s ease-in-out;
+  }
+  
+  input[type=file]::file-selector-button:hover {
+      background: var(--secondary-blue-dark);
+  }
+
+.drop-container {
+    flex-grow: 1;
+    width: 100%;
+    position: relative;
+    display: flex;
+    gap: 0.7rem;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 1rem;
+    border: 2px dashed var(--light-gray);
+    transition: background .2s ease-in-out, border .2s ease-in-out;
+    font-size: var(--font-size-normal);
+    cursor: pointer;
+  }
+  
+  .drop-container:hover,
+  .drop-container.drag-active {
+    background: #e9effd;
+  }
+  
+  .drop-container:hover .drop-title,
+  .drop-container.drag-active .drop-title{
+    color: #222;
+  }
+  
+  .drop-title {
+    color: #444;
+    font-size: 20px;
+    font-weight: bold;
+    text-align: center;
+    transition: color .2s ease-in-out;
+  }
+
+@media screen and ( max-width: 768px) {
+
+}
+@media  screen and (max-width:576px) {
+    .upload-format{
+        width: 100%;
+        margin: 1rem 0px;
+        flex-direction: row;
+        left: 0;
+        top: -1.6rem;
+    }
+    img.solver-illus{
+        width: 102%;
+        height: 102%;
+    }
+    .form-container{
+        width: 100%;
+        border-radius: 0px;
+        box-shadow: none;
+    }
+    .form-inner{
+        width: 90%;
+        height: 75%;
+        box-shadow: 0 7px 0 0 var(--secondary-blue-dark);
+        /* padding: 1.5rem; */
+    }
+    body{
+        width: -moz-fit-content;
+        width: fit-content;
+    }
+
+}

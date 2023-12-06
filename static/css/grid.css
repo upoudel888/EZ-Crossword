@@ -1,0 +1,71 @@
+*,*::before,*::after{
+    padding: 0px;
+    margin: 0px;
+    box-sizing: border-box;
+    /* background-color: rgba(0,100,0,0.2) !important; */
+}
+.crossword{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+    gap: 1rem;
+}
+.clues{
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    justify-content: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+    flex-grow: 1;
+}
+
+.across-clues, .down-clues{
+    display: flex;
+    flex-direction: column;
+    padding: 1rem;
+    width: 20rem;
+    box-shadow: 0 0 4px rgba(0,0,0,0.2);
+    height: 100%;
+}
+
+.clue-head-title{
+    font-size: 1.3rem;
+}
+
+.grid{
+    width: 30rem;
+    height: 30rem;
+    border: 1px solid black;
+    display: flex;
+    flex-direction: column;
+}
+.grid-row{
+    display: flex;
+    flex-direction: row;
+}
+.grid-cell{
+    height: 2rem;
+    width: 2rem;
+    border: 1px solid black;
+    position: relative;
+}
+.dead-cell{
+    background-color: black;
+}  
+.cell-num{
+    font-size: 0.6rem;
+    font-weight: 500;
+    position: absolute;
+}
+.cell-data{
+    font-size: 1.2rem;
+    text-align: center;
+    line-height: 2rem;
+    font-weight: bold;
+}
+
+
+

@@ -1,0 +1,78 @@
+{% extends 'Solver/solver.html' %}
+{% load static %}
+
+{% block css %}
+    <link rel="stylesheet" href= {%static "css/verify.css" %}>
+{% endblock css %}
+
+{% block script %}
+<script src= {%static "js/animateSolution.js"%} type="module" defer></script>
+{% endblock script %}
+
+{% block hero %}
+    
+    <div class="note-ribbon">
+        <div class="special-note">
+            {% if user_uploaded_image %}
+                <span class="emphasis-text">Puzzle Solution</span><br><br>
+            {% else %}
+                <span class="emphasis-text">Evaluations</span> <br><br>
+                <span class = 'bold'>Letter Accuracy : {{ evalutions.correct_letters_percent|floatformat:"2" }}% </span>
+                ({{ evalutions.correct_letters }}/{{ evalutions.total_letters }}) <br>
+                <div class="dummy"></div>
+                <span class = 'bold'>Word Accuracy : {{ evalutions.correct_words_percent|floatformat:"2" }}% </span>
+                ({{ evalutions.correct_words }}/{{ evalutions.total_words }}) <br><br>
+                {% endif %}
+            <a href={% url 'Solver' %}><button class="custom-btn proceed-button btn-11">Solve Next</button></a>
+        </div>
+    </div>
+
+
+
+    <div class="crossword">
+        <div class="grid-and-options">
+            <div class="grid">
+                {% for row_data in grid_rows %}
+                <div class="grid-row">
+                    {% for num,data,sol in row_data %}
+                        {% if data == "." %}
+                        <div class="grid-cell dead-cell">
+                            <div class="cell-num"></div>
+                            <div class="cell-data"></div>
+                        </div>
+                        {% else %}
+                            <div class="grid-cell hide-for-answer {% if user_uploaded_image != True and data != sol %}wrong-cell{% endif %}" >
+                                <div class="cell-num">
+                                    {% if num != 0 %} {{num}}{% endif %}
+                                </div>
+                                <div class="cell-data hidden">{{sol}}</div>
+                            </div>
+                        {% endif %}
+                    {% endfor %}
+                </div>     
+                {% endfor %}
+            </div>
+        </div>
+        {% comment %} clues {% endcomment %}
+        <div class="clues">
+            <div class="across-clues">
+                <div class="clue-head-title" > Across </div>
+                {% for num,clue in across_clues %}
+                    <div class="across-clue across-clue-{{num}}">
+                        <div class="clue-num"> {{num}} </div>
+                        <div class="clue-text"> {{clue|safe}} </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                <div class="down-clues">
+                    <div class="clue-head-title" > Down </div>
+                    {% for num,clue in down_clues %}
+                        <div class="down-clue down-clue-{{num}}">
+                            <div class="clue-num"> {{num}} </div>
+                            <div class="clue-text"> {{clue|safe}} </div>
+                        </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+{% endblock hero %}

@@ -1,0 +1,386 @@
+@import url('https://fonts.googleapis.com/css2?family=Lora&family=Montserrat&display=swap');
+:root{
+    --font-size-small: 0.8rem;
+    --font-size-normal: 1rem;
+    --font-size-large: 1.1rem;
+    --font-size-logo : 1.3rem;
+
+    --main-white: #ffff;
+    --light-gray: #e3e3e1;
+    --light-white: #fafafa;
+
+    --secondary-blue : #4d88f9;
+    --secondary-blue-dark:#2860d8 ;
+    --secondary-blue-light: #e9effd;
+
+    
+    --secondary-pink:#ff928f;
+    --secondary-pink-dark:#e1473d;
+
+    --bg-danger:#ff3833;
+
+    --breakpoint-lg: 992px;
+    --breakpoint-md: 768px;
+    --breakpoint-sm: 576px;
+    
+}
+
+
+li{
+    list-style-type: none;
+    text-decoration: none;
+}
+a{
+    text-decoration: none;
+    color: black;
+}
+
+*,*::before,*::after{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    /* background-color: rgba(0,100,0,0.1) !important; */
+}
+body{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    min-height: 100vh;
+}
+
+ *:not(i){
+    font-family: 'Lora', serif;
+ }
+
+nav{
+   height: 4rem;
+   display: flex; 
+   flex-direction: row;
+   align-items: center;
+   justify-content: space-between;
+   flex-wrap: wrap;
+   z-index: 10;
+   overflow: hidden;
+   box-shadow: 0px 1px 0px rgba(0,0,0,.2);
+   margin-left: auto;
+   margin-right: auto;
+   position: sticky;
+   top: 0;
+   background-color: var(--main-white);
+}
+
+
+.logo-box{
+    margin-left: 1rem;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    width: 26rem;
+    gap: 1rem;
+    height: 4rem;
+}
+
+.logo-box img{
+    width: 2.5rem;
+    height: 2.5rem;
+}
+
+.logo-text{
+    font-size: var(--font-size-logo);
+    line-height: 2rem;
+    font-weight: bolder;
+}
+
+nav .ham{
+    margin-right: 1rem;
+    /* w:h ration 4/3 */
+    display: none;
+    width: 1.6rem;
+    height: 1.2rem;
+    position: relative;
+    cursor: pointer;
+    -webkit-transform: rotate(0deg);
+    -moz-transform: rotate(0deg);
+    -o-transform: rotate(0deg);
+        transform: rotate(0deg);
+    -webkit-transition: .5s ease-in-out;
+    -moz-transition: .5s ease-in-out;
+    -o-transition: .5s ease-in-out;
+        transition: .5s ease-in-out;
+}
+
+nav .ham span{
+    display: block;
+    position: absolute;
+    height: 18%;
+    width: 100%;
+    background: black;
+    opacity: 1;
+    left: 0;
+    -webkit-transform: rotate(0deg);
+    -moz-transform: rotate(0deg);
+    -o-transform: rotate(0deg);
+    transform: rotate(0deg);
+    -webkit-transition: .25s ease-in-out;
+    -moz-transition: .25s ease-in-out;
+    -o-transition: .25s ease-in-out;
+    transition: .25s ease-in-out;
+}
+
+nav .ham span:nth-child(1) {
+    top: 0%;
+    -webkit-transform-origin: left center;
+    -moz-transform-origin: left center;
+    -o-transform-origin: left center;
+    transform-origin: left center;
+}
+  
+nav .ham span:nth-child(2) {
+    top: 40%;
+    -webkit-transform-origin: left center;
+    -moz-transform-origin: left center;
+    -o-transform-origin: left center;
+    transform-origin: left center;
+}
+  
+nav .ham span:nth-child(3) {
+    top: 80%;
+    -webkit-transform-origin: left center;
+    -moz-transform-origin: left center;
+    -o-transform-origin: left center;
+    transform-origin: left center;
+}
+  
+nav .ham.open span:nth-child(1) {
+    -webkit-transform: rotate(45deg);
+    -moz-transform: rotate(45deg);
+    -o-transform: rotate(45deg);
+    transform: rotate(45deg);
+    top: -6.67%;
+    left: 13%;
+}
+  
+nav .ham.open span:nth-child(2) {
+    width: 0%;
+    opacity: 0;
+}
+  
+nav .ham.open span:nth-child(3) {
+    -webkit-transform: rotate(-45deg);
+    -moz-transform: rotate(-45deg);
+    -o-transform: rotate(-45deg);
+    transform: rotate(-45deg);
+    top: 86.67%;
+    left: 13%;
+}
+
+.nav-links{
+    width: 40rem;
+    transform: none;
+    margin-right: 1rem;
+}
+.nav-links ul{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: right;
+    gap: 2rem;
+    font-size: var(--font-size-normal);
+}
+.nav-links ul a{
+    padding: 0.3rem;
+    font-weight: 500;
+    transition: 0.2s ease-in-out;
+}
+.nav-links ul li:nth-child(1) a{
+    border-bottom: 3px solid black;
+}
+.nav-links ul a:hover{
+    background-color:  #e3e3e1;
+}
+
+.hero{
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    margin-left: auto;
+    margin-right: auto;
+    position: relative;
+}
+
+.hero.overlay::before{
+    content: url("../images/loading1.svg");
+    position: absolute;
+    width: 100%;
+    height:100%;
+    display: flex;
+    justify-content: center;
+    padding-top: 15rem;
+    background-color: rgba(0,0,0,0.8);
+    z-index: 5;
+}
+.hero.overlay::after{
+    content: "Please Wait . . .";
+    position: absolute;
+    width: 100%;
+    text-align: center;
+    font-size: var(--font-size-logo);
+    padding-top: 25rem;
+    color: white;
+    background-repeat: no-repeat;
+    z-index: 6;
+}
+
+
+/* Styling the footer */
+footer{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 2rem;
+    background-color: var(--light-gray);
+
+}
+
+/* 11 */
+.btn-11 {
+    padding: 0.5rem;
+    transition: all 0.3s ease;
+    width: 8rem;
+    font-size: var(--font-size-large);
+    line-height: var(--font-size-large);
+    border: none;
+    cursor:pointer;
+    background: #000;
+    color: #fff;
+
+  }
+.btn-11:hover {
+    transform: scale(1.05);
+    box-shadow: 0 0 8px rgba(0,0,0,0);
+
+  }
+  
+.btn-11:active{
+    box-shadow:  4px 4px 6px 0 rgba(255,255,255,.3),
+                -4px -4px 6px 0 rgba(116, 125, 136, .2), 
+      inset -4px -4px 6px 0 rgba(255,255,255,.2),
+      inset 4px 4px 6px 0 rgba(0, 0, 0, .2);
+  }
+  
+.bold{
+    font-weight: bold;
+}
+
+
+@media screen and ( max-width: 992px) {
+    nav{
+        width: 100%;
+        overflow: visible;
+    }
+    nav .ham{
+        display: block;
+    }
+    nav .nav-links{
+        padding: 0rem;
+        margin: 0rem;
+        width: 100%;
+        transform: translateX(120%);
+        display: block;
+        border-bottom: 1px solid rgba(0,0,0,.2);
+        border-top: 1px solid rgba(0,0,0,.2);
+        background-color: white;
+    }
+    nav .nav-links ul{
+        margin: 0.5rem 0rem ;
+        flex-direction: column; 
+        gap: 1.2rem;
+    }
+    .scale-in-hor-right {
+        -webkit-animation: scale-in-hor-right 0.25s cubic-bezier(0.250, 0.460, 0.450, 0.940) both;
+                animation: scale-in-hor-right 0.25s cubic-bezier(0.250, 0.460, 0.450, 0.940) both;
+    }
+    
+    .scale-out-hor-right {
+        -webkit-animation: scale-out-hor-right 0.25s cubic-bezier(0.550, 0.085, 0.680, 0.530) both;
+                animation: scale-out-hor-right 0.25s cubic-bezier(0.550, 0.085, 0.680, 0.530) both;
+    }
+}
+@media screen and ( max-width: 68rem) {
+    .logo-box{
+        width: 20rem;
+    }
+}
+
+
+/* animista.net for animations */
+
+
+ @-webkit-keyframes scale-in-hor-right {
+    0% {
+      -webkit-transform: scaleX(0);
+              transform: scaleX(0);
+      -webkit-transform-origin: 100% 100%;
+              transform-origin: 100% 100%;
+      opacity: 1;
+    }
+    100% {
+      -webkit-transform: scaleX(1);
+              transform: scaleX(1);
+      -webkit-transform-origin: 100% 100%;
+              transform-origin: 100% 100%;
+      opacity: 1;
+    }
+  }
+  @keyframes scale-in-hor-right {
+    0% {
+      -webkit-transform: scaleX(0);
+              transform: scaleX(0);
+      -webkit-transform-origin: 100% 100%;
+              transform-origin: 100% 100%;
+      opacity: 1;
+    }
+    100% {
+      -webkit-transform: scaleX(1);
+              transform: scaleX(1);
+      -webkit-transform-origin: 100% 100%;
+              transform-origin: 100% 100%;
+      opacity: 1;
+    }
+  }
+  
+
+
+ @-webkit-keyframes scale-out-hor-right {
+    0% {
+      -webkit-transform: scaleX(1);
+              transform: scaleX(1);
+      -webkit-transform-origin: 100% 100%;
+              transform-origin: 100% 100%;
+      opacity: 1;
+    }
+    100% {
+      -webkit-transform: scaleX(0);
+              transform: scaleX(0);
+      -webkit-transform-origin: 100% 100%;
+              transform-origin: 100% 100%;
+      opacity: 1;
+    }
+  }
+  @keyframes scale-out-hor-right {
+    0% {
+      -webkit-transform: scaleX(1);
+              transform: scaleX(1);
+      -webkit-transform-origin: 100% 100%;
+              transform-origin: 100% 100%;
+      opacity: 1;
+    }
+    100% {
+      -webkit-transform: scaleX(0);
+              transform: scaleX(0);
+      -webkit-transform-origin: 100% 100%;
+              transform-origin: 100% 100%;
+      opacity: 1;
+    }
+  }
+  
