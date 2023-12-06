@@ -23,5 +23,10 @@
         "src": "/(.*)",
         "dest": "EZcrossword/wsgi.py"
       }
-    ]
+    ],
+    "functions": {
+      "staticfiles/static/js/*.js": {
+        "maxDuration": 60
+      }
+    }
   }
