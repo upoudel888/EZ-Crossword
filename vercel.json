@@ -23,10 +23,5 @@
         "src": "/(.*)",
         "dest": "EZcrossword/wsgi.py"
       }
-    ],
-    "functions": {
-      "*": {
-        "maxDuration": 60
-      }
-    }
+    ]
   }
