@@ -25,7 +25,7 @@
       }
     ],
     "functions": {
-      "/static/**/*": {
+      "*": {
         "maxDuration": 60
       }
     }
