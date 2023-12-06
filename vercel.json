@@ -25,7 +25,7 @@
       }
     ],
     "functions": {
-      "static/js/crossword.js": {
+      "static/**/*": {
         "maxDuration": 60
       }
     }
