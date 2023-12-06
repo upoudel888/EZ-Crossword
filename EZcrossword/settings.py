@@ -13,8 +13,13 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 from pathlib import Path
 import os
 
+from dotenv import load_dotenv 
+import dj_database_url
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+print(os.environ.get("DEVELOPMENT_DB_URL"))
+load_dotenv(BASE_DIR / "secrets.env")
 
 
 # Quick-start development settings - unsuitable for production
@@ -28,7 +33,18 @@ DEBUG = True
 
 ALLOWED_HOSTS = ['.vercel.app',"now.sh",'127.0.0.1',"localhost"]
 
-
+if os.environ.get("VERCEL_ENV") == "production":
+    DATABASES = {
+        "default" : dj_database_url.config(
+            default=os.environ.get("PRODUCTION_DB_URL"), conn_max_age=600
+        )
+    }
+else:
+    DATABASES = {
+        "default" : dj_database_url.config(
+            default=os.environ.get("DEVELOPMENT_DB_URL"), conn_max_age=600
+        )
+    }
 
 
 # Application definition
