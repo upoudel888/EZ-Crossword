@@ -18,7 +18,7 @@ import dj_database_url
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-print(os.environ.get("DEVELOPMENT_DB_URL"))
+
 load_dotenv(BASE_DIR / "secrets.env")
 
 
@@ -41,10 +41,11 @@ if os.environ.get("VERCEL_ENV") == "production":
     }
 else:
     DATABASES = {
-        "default" : dj_database_url.config(
-            default=os.environ.get("DEVELOPMENT_DB_URL"), conn_max_age=600
-        )
+    "default": {
+        "ENGINE": "django.db.backends.sqlite3",
+        "NAME": BASE_DIR / "db.sqlite3",
     }
+}
 
 
 # Application definition
