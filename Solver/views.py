@@ -85,8 +85,6 @@ def solve(request):
         return render(request,"Solver/solver.html")
     
     if( request.method == "POST"):
-        # clearing out the session
-        request.session.clear()
 
         crossword_file = request.FILES['crossword_file']
 
