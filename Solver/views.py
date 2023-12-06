@@ -1,12 +1,12 @@
 from django.shortcuts import render,HttpResponse,redirect
 from django.views.decorators.csrf import csrf_exempt
-import cv2
-import numpy as np
+# import cv2
+# import numpy as np
 import json
 import puz
 import requests
 import tempfile
-from .extractpuzzle import extract_grid,get_text
+# from .extractpuzzle import extract_grid,get_text
 # from .tasks import solvePuzzle69
 
 def get_JSON_from_puz(puz_file):
@@ -91,75 +91,77 @@ def solve(request):
         crossword_file = request.FILES['crossword_file']
 
         if crossword_file:
-            # Image uploaded
-            if crossword_file.content_type.startswith('image'):
-
-                request.session['user_uploaded_image'] = True
-
-                # Get the image from the request
-                image = request.FILES.get('crossword_file')
-
-                # File was not received in the request
-                if image is None:
-                    return redirect('/solver')
-
-                # Read the image using OpenCV
-                img_array = cv2.imdecode(np.frombuffer(image.read(), np.uint8), cv2.IMREAD_GRAYSCALE)
+            # # Image uploaded
+            # if crossword_file.content_type.startswith('image'):
                 
-                try: # try extracting the grid from the image
-                    # dict = { 'size' : size, 'grid' : grid, 'gridnums': grid_nums, 'across_nums': down_clue_num,'down_nums' : across_clue_num }
-                    grid_data = extract_grid(img_array)
-                    # Converting to parsable format for the template
-                    rows,_,_ = get_rows_and_clues(grid_data)
+
+            #     request.session['user_uploaded_image'] = True
+
+            #     # Get the image from the request
+            #     image = request.FILES.get('crossword_file')
+
+            #     # File was not received in the request
+            #     if image is None:
+            #         return redirect('/solver')
+
+            #     # Read the image using OpenCV
+            #     img_array = cv2.imdecode(np.frombuffer(image.read(), np.uint8), cv2.IMREAD_GRAYSCALE)
+                
+            #     try: # try extracting the grid from the image
+            #         # dict = { 'size' : size, 'grid' : grid, 'gridnums': grid_nums, 'across_nums': down_clue_num,'down_nums' : across_clue_num }
+            #         # grid_data = extract_grid(img_array)
+            #         grid_data = extract_grid
+            #         # Converting to parsable format for the template
+            #         rows,_,_ = get_rows_and_clues(grid_data)
                     
-                    # just initializing the dictionary with clue_number (as keys) deduced from the grid
-                    # key=clue_number and value=clue
-                    across_clues_dict = {}
-                    down_clues_dict = {}
-                    for i in grid_data['across_nums']:
-                        across_clues_dict[i] = ''
-                    for i in grid_data['down_nums']:
-                        down_clues_dict[i] = ''
+            #         # just initializing the dictionary with clue_number (as keys) deduced from the grid
+            #         # key=clue_number and value=clue
+            #         across_clues_dict = {}
+            #         down_clues_dict = {}
+            #         for i in grid_data['across_nums']:
+            #             across_clues_dict[i] = ''
+            #         for i in grid_data['down_nums']:
+            #             down_clues_dict[i] = ''
 
-                    request.session['across_clues_dict'] =  across_clues_dict
-                    request.session['down_clues_dict'] =  down_clues_dict
+            #         request.session['across_clues_dict'] =  across_clues_dict
+            #         request.session['down_clues_dict'] =  down_clues_dict
 
-                    request.session['grid_extraction_failed'] = False
-                    request.session['grid-rows'] = rows
+            #         request.session['grid_extraction_failed'] = False
+            #         request.session['grid-rows'] = rows
             
-                except Exception as e:
-                    request.session['grid_extraction_failed'] = True
-                    print("Grid Extraction failed:", e)
+            #     except Exception as e:
+            #         request.session['grid_extraction_failed'] = True
+            #         print("Grid Extraction failed:", e)
 
                 
-                try: # try extracting clues
-                    across, down = get_text(img_array) # { number : [column_of_projection_profile,extracted_text]}
+            #     try: # try extracting clues
+            #         across, down = get_text(img_array) # { number : [column_of_projection_profile,extracted_text]}
                     
-                     # bringing clue number from the session
-                    across_clues_dict = request.session.get('across_clues_dict')
-                    down_clues_dict = request.session.get('down_clues_dict')
+            #          # bringing clue number from the session
+            #         across_clues_dict = request.session.get('across_clues_dict')
+            #         down_clues_dict = request.session.get('down_clues_dict')
 
-                    for key,value in across.items():
-                        across_clues_dict[int(key)] = value[1]
-                    for key,value in down.items():
-                        down_clues_dict[int(key)] = value[1]
+            #         for key,value in across.items():
+            #             across_clues_dict[int(key)] = value[1]
+            #         for key,value in down.items():
+            #             down_clues_dict[int(key)] = value[1]
                     
-                    across_clues = [(key,value.strip(".").strip(" ").replace("|","l")) for key, value in across_clues_dict.items()]
-                    down_clues = [(key,value.strip(".").strip(" ").replace("|","l")) for key, value in down_clues_dict.items()]
+            #         across_clues = [(key,value.strip(".").strip(" ").replace("|","l")) for key, value in across_clues_dict.items()]
+            #         down_clues = [(key,value.strip(".").strip(" ").replace("|","l")) for key, value in down_clues_dict.items()]
 
-                    request.session['clue_extraction_failed'] = False
-                    request.session['across_clues'] = across_clues
-                    request.session['down_clues'] = down_clues
+            #         request.session['clue_extraction_failed'] = False
+            #         request.session['across_clues'] = across_clues
+            #         request.session['down_clues'] = down_clues
 
-                except Exception as e:
-                    request.session['clue_extraction_failed'] = True
-                    print("Clue Extraction failed:", e)
+            #     except Exception as e:
+            #         request.session['clue_extraction_failed'] = True
+            #         print("Clue Extraction failed:", e)
 
-                return redirect('Verify')
+            #     return redirect('Verify')
 
 
             # Json File Uploaded
-            elif crossword_file.content_type == 'application/json':
+            if crossword_file.content_type == 'application/json':
 
                 json_file = request.FILES.get("crossword_file")
                 if json_file is None:
