@@ -277,19 +277,20 @@ export default class Crossword{
         }
         const csrftoken = getCookie('csrftoken');
 
-        const response = await fetch('/solver/solve/', {
+        console.log("I've sent the request");
+
+        const response = await fetch("https://ujjwal123-ez-crossword.hf.space/solve", {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'X-CSRFToken': csrftoken,
-                // You might need other headers like CSRF token, authentication, etc.
             },
             body: JSON.stringify(gridJSON)
         })
-        const redirectUrl = response.url ;
-        hero.classList.toggle("overlay");
-        window.location.href = redirectUrl;
-
+        const jsonResponse = await response.json();
+        console.log(jsonResponse)
+        
+        // window.location.href = "/"
+        console.log("I've received the response");
     }
 
     // ****************** grid manipulation ***************************
