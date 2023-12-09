@@ -263,7 +263,8 @@ def verify(request):
 def solve1(request):
     if( request.method == "POST"):
         received_data = json.loads(request.body.decode('utf-8'))  # decoding byte data to a string
-        
+        print(received_data)
+        print("I am here")
         if(not request.session.get('user_uploaded_image')):
             print("\nGenerating Solutions")
             received_data = request.session.get("json")

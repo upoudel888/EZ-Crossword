@@ -6,5 +6,4 @@ urlpatterns = [
     path("verify/",view = views.verify, name="Verify"),
     path("solve/",view=views.solve1,name="Solving"),
     path("solution/",view=views.showSolution,name="Solution")
-
 ]

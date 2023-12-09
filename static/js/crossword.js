@@ -215,7 +215,7 @@ export default class Crossword{
     }
 
     // this function is triggered when user clicks proceed button
-    makeSolveRequest(){
+    async makeSolveRequest(){
 
         // Making the JSON data ready
         let gridJSON = {
@@ -277,10 +277,7 @@ export default class Crossword{
         }
         const csrftoken = getCookie('csrftoken');
 
-        console.log(csrftoken)
-
-
-        fetch('/solver/solve/', {
+        const response = await fetch('/solver/solve/', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -289,28 +286,10 @@ export default class Crossword{
             },
             body: JSON.stringify(gridJSON)
         })
-        .then( response => {
-            if (response.ok) {
-                if (response.redirected) {
-                    // If the response is a redirect, you can get the redirect URL from the response headers
-                    const redirectURL = response.url;
-                    
-                    hero.classList.toggle("overlay");
-                    // Perform the redirect using JavaScript
-                    window.location.href = redirectURL;
-                }
-            }
-        }
-        )  // Extract the response text
-        .then(data => {
-            // Display the response from the server
-            console.log(data);
-        })
-        .catch(error => {
-            // Handle errors here
-            console.error('Error:', error);
-            alert("An error Occured. Please Refresh the page");
-        });
+        const redirectUrl = response.url ;
+        hero.classList.toggle("overlay");
+        window.location.href = redirectUrl;
+
     }
 
     // ****************** grid manipulation ***************************

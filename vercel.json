@@ -21,10 +21,7 @@
     },
     {
       "src": "/(.*)",
-      "dest": "EZcrossword/wsgi.py",
-      "config": {
-        "functionTimeout": 60
-      }
+      "dest": "EZcrossword/wsgi.py"
     }
   ]
 }
