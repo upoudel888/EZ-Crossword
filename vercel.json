@@ -21,13 +21,10 @@
     },
     {
       "src": "/(.*)",
-      "dest": "EZcrossword/wsgi.py"
+      "dest": "EZcrossword/wsgi.py",
+      "config": {
+        "functionTimeout": 60
+      }
     }
-  ],
-  "functions": {
-    "/static/js/*.js": {
-      "memory": 3008,
-      "maxDuration": 60
-    }
-  }
+  ]
 }
