@@ -234,13 +234,16 @@ nav .ham.open span:nth-child(3) {
 
 /* Styling the footer */
 footer{
+    width: 66rem;
+    margin-left: auto;
+    margin-right: auto;
     display: flex;
     align-items: center;
     justify-content: center;
     height: 2rem;
     background-color: var(--light-gray);
-
 }
+
 
 /* 11 */
 .btn-11 {
@@ -278,6 +281,7 @@ footer{
         width: 100%;
         overflow: visible;
     }
+    
     nav .ham{
         display: block;
     }
@@ -308,7 +312,10 @@ footer{
 }
 @media screen and ( max-width: 68rem) {
     .logo-box{
-        width: 20rem;
+        width: auto;
+    }
+    footer{
+        width: 100%;
     }
 }
 

@@ -251,8 +251,18 @@
     height: 0.2rem;
 }
 
+.json-hidden{
+    display: none;
+}
+
 @media screen and (max-width: 992px){
     .note-ribbon{
         min-width: 100%;
+    }
+}
+
+@media screen and (max-width: 37rem){
+    nav,footer{
+        width: 37rem !important;
     }
 }

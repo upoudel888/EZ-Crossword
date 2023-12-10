@@ -176,7 +176,7 @@ def solve(request):
                 request.session['grid-rows'] = rows # displayable format for UI
                 request.session['across_clues'] = across_clues
                 request.session['down_clues'] = down_clues
-                request.session['json'] = grid_data # Used to solve the puzzle
+                request.session['json'] = json.dumps(grid_data) # Used to solve the puzzle
 
                 return redirect('Verify')
                  
@@ -200,7 +200,7 @@ def solve(request):
                 request.session['grid-rows'] = rows
                 request.session['across_clues'] = across_clues
                 request.session['down_clues'] = down_clues
-                request.session['json'] = grid_data
+                request.session['json'] = json.dumps(grid_data)
 
                 return redirect('Verify')
             else:
@@ -255,50 +255,22 @@ def verify(request):
         context['grid_rows'] = grid_rows # Array of arrays 1st array element contains cell data for 1st and 1st columnrow as [ {grid_num},{grid-value}] format
         context['across_clues'] = across_clues
         context['down_clues'] = down_clues
+        context['json'] = request.session.get("json")
         context['solutions'] = 0
 
         return render(request,"Solver/verify.html",context=context)
 
 
-def solve1(request):
+def saveSolution(request):
     if( request.method == "POST"):
-        received_data = json.loads(request.body.decode('utf-8'))  # decoding byte data to a string
-        print(received_data)
-        print("I am here")
-        if(not request.session.get('user_uploaded_image')):
-            print("\nGenerating Solutions")
-            received_data = request.session.get("json")
-            print(received_data)
-             # Make an API POST request to solve puzzle
-            response = requests.post("https://ujjwal123-ez-crossword.hf.space/solve", json=received_data,timeout= 100)
-        else:
-            # Upadating session after receiving modified clues and grid
-            rows,across_clues,down_clues = get_rows_and_clues(received_data)
-            request.session['grid-rows'] = rows
-            request.session['across_clues'] = across_clues
-            request.session['down_clues'] = down_clues
-            request.session['json'] = received_data
 
-            response = requests.post("https://ujjwal123-ez-crossword.hf.space/solve", json=received_data,timeout=100)
-    
-        if response.status_code == 200:
-            data = response.json()
-            # Extract solution (grid) and evaluations from the API response
-            solutions = data[0]  # Extract grid
-            evaluations = data[1]  # Extract statistics
+        received_solution = json.loads(request.body.decode('utf-8'))  # decoding byte data to a string
+        print(received_solution)
+        request.session['solution'] = received_solution[0]
+        request.session['evaluations'] = received_solution[1]
 
-            # printing solution
-            print("Solution")
-            print(solutions)
-            print("Evalutions")
-            print(evaluations)
+        return redirect("Solution")
 
-            request.session['solution'] = solutions
-            request.session['evaluations'] = evaluations
-
-            return redirect("Solution")
-        else:
-            return HttpResponse(f"Error: {response.status_code} - {response.text}")
 
 
     

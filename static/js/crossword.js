@@ -41,6 +41,8 @@ export default class Crossword{
         }   
     }
 
+    
+
     async highlight(){
 
         function sleep(ms) {
@@ -224,7 +226,6 @@ export default class Crossword{
                 "cols" : this.dimension
             },
             "gridnums" : this.grid_nums,
-
         }
         
         let grid = [];
@@ -238,6 +239,12 @@ export default class Crossword{
         let downClues = [];
         let acrossAnswers = [];
         let downAnswers= [];
+
+        // trying to extract from json-hidden div
+        // answers are present only if there's answers field in the parsed JSON
+        let jsonDiv = document.querySelector(".json-hidden");
+        let jsonObj = JSON.parse(jsonDiv.innerHTML);
+        
         for(let clue_num of this.across_nums){
             acrossClues.push(String(clue_num) + ". " + this.acrossCluesWithNums[clue_num]);
             acrossAnswers.push("A".repeat(this.across_length[this.across_nums.indexOf(clue_num)]));
@@ -246,20 +253,47 @@ export default class Crossword{
             downClues.push(String(clue_num) + ". " + this.downCluesWithNums[clue_num]);
             downAnswers.push("A".repeat(this.down_length[this.down_nums.indexOf(clue_num)]));
         }
+
+        // check if there's answers key in the json
+        // yes ? assign answer from json : fill with dummy ones i.e. all AAAAAA's
+        if(jsonObj.hasOwnProperty("answers")){
+            gridJSON['answers'] = jsonObj["answers"];
+        }else{
+            gridJSON['answers'] = {
+                "across" : acrossAnswers,
+                "down": downAnswers
+            };
+        }
         
         gridJSON["grid"] = grid;
         gridJSON['clues'] = {
             "across" : acrossClues,
             "down": downClues
         };
-        gridJSON['answers'] = {
-            "across" : acrossAnswers,
-            "down": downAnswers
-        };
 
         const hero = document.querySelector(".hero");   // to show the loading svg
         hero.classList.toggle("overlay"); 
 
+        
+        console.log("Sending solve request for");
+        console.log(JSON.stringify(jsonObj));
+
+        // to bypass the 10s serverless function timout on VERCEL, the request to huggingface API
+        // is made from the frontend
+        const response = await fetch("https://ujjwal123-ez-crossword.hf.space/solve", {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(jsonObj)
+        })
+        const jsonResponse = await response.json();
+        
+        console.log("The solution is");
+        console.log(jsonResponse);
+        
+        // Now to save the solution in the session the solution is sent to the route /solver/save
+        // retrieving the csrf token
         function getCookie(name) {
             let cookieValue = null;
             if (document.cookie && document.cookie !== '') {
@@ -276,22 +310,24 @@ export default class Crossword{
             return cookieValue;
         }
         const csrftoken = getCookie('csrftoken');
-
-        console.log("I've sent the request");
-
-        const response = await fetch("https://ujjwal123-ez-crossword.hf.space/solve", {
-            method: 'POST',
-            headers: {
+        // sending the save post request
+        const postResponseToServer = await fetch("/solver/save-solution/",{
+            method : "POST",
+            headers:{
                 'Content-Type': 'application/json',
+                'X-CSRFToken': csrftoken
+
             },
-            body: JSON.stringify(gridJSON)
+            body: JSON.stringify(jsonResponse)
         })
-        const jsonResponse = await response.json();
-        console.log(jsonResponse)
         
-        // window.location.href = "/"
-        console.log("I've received the response");
+        hero.classList.toggle("overlay");
+        
+        const windowLocation = postResponseToServer.url
+        window.location.href = windowLocation;
+
     }
+
 
     // ****************** grid manipulation ***************************
     
