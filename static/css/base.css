@@ -234,7 +234,7 @@ nav .ham.open span:nth-child(3) {
 
 /* Styling the footer */
 footer{
-    width: 66rem;
+    width: 68rem;
     margin-left: auto;
     margin-right: auto;
     display: flex;
@@ -318,6 +318,7 @@ footer{
         width: 100%;
     }
 }
+
 
 
 /* animista.net for animations */
