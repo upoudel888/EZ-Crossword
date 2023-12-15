@@ -46,6 +46,44 @@ body{
     flex-direction: column;
     justify-content: space-between;
     min-height: 100vh;
+    position: relative;
+}
+.overlay{
+    /* when visible the display should be flex */
+    display: none; 
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right:0;
+    background-color: rgba(0,0,0,0.7);
+    z-index: 200;
+}
+
+.overlay-contents{
+    margin-left: 50vw;
+    margin-top: 50vh;
+    transform: translate(-50%,-50%);
+    position: fixed;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.overlay-image{
+    content:" ";
+    background-color: black;
+    background-image: url(../images/loading1.svg);
+    background-position: center;
+    width: 4rem;
+    height: 4rem;
+}
+
+.overlay-message{
+    font-size: var(--font-size-large);
+    color: white;
 }
 
  *:not(i){

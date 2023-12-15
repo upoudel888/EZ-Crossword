@@ -271,8 +271,8 @@ export default class Crossword{
             "down": downClues
         };
 
-        const hero = document.querySelector(".hero");   // to show the loading svg
-        hero.classList.toggle("overlay"); 
+        const overlay = document.querySelector(".overlay");   // to show the loading svg
+        overlay.style.display = 'flex';
 
         
         console.log("Sending solve request for");
@@ -321,7 +321,7 @@ export default class Crossword{
             body: JSON.stringify(jsonResponse)
         })
         
-        hero.classList.toggle("overlay");
+        overlay.style.display = 'flex';
         
         const windowLocation = postResponseToServer.url
         window.location.href = windowLocation;

@@ -27,7 +27,7 @@
         </div>
     </div>
     <div class="form-container">     
-        <form action = "/solver/" class = "form-inner" method="POST" enctype="multipart/form-data">
+        <form action = "/solver/" class = "form-inner" method="POST" enctype="multipart/form-data" onSubmit="handleSubmit(event)">
             {% csrf_token %}
             
             <label for="images" class="drop-container" id="dropcontainer">
@@ -43,5 +43,5 @@
 {% endblock hero %}
 
 {% block script %}
-    <script src={% static "js/drag-drop.js"%} defer></script>
+    <script src={% static "js/form-handler.js"%} defer></script>
 {% endblock script %}
