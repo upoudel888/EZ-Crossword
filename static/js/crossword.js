@@ -219,13 +219,25 @@ export default class Crossword{
     // this function is triggered when user clicks proceed button
     async makeSolveRequest(){
 
+        // show the loading SVG
+        const overlay = document.querySelector(".overlay");
+        overlay.style.display = 'flex';
+
+        //     # final JSON format
+        // grid_data = {'size': { 'rows': p.height, 'cols': p.width}, 
+        //              'clues': {'across': across_clues, 'down': down_clues}, 
+        //              'grid': grid,
+        //              'gridnums':gridnum,
+        //              'answers':{'across':across_answer,'down':down_answer}
+        //             }
+
         // Making the JSON data ready
         let gridJSON = {
-            "size" : {
-                "rows" : this.dimension,
-                "cols" : this.dimension
-            },
-            "gridnums" : this.grid_nums,
+            size : { rows : this.dimension,cols : this.dimension},
+            clues : { across : [], down : []},
+            grid : [],
+            gridnums : this.grid_nums,
+            answers : { across : [], down : []}
         }
         
         let grid = [];
@@ -258,25 +270,21 @@ export default class Crossword{
         // yes ? assign answer from json : fill with dummy ones i.e. all AAAAAA's
         if(jsonObj.hasOwnProperty("answers")){
             gridJSON['answers'] = jsonObj["answers"];
+            gridJSON['grid'] = jsonObj['grid']
         }else{
             gridJSON['answers'] = {
-                "across" : acrossAnswers,
-                "down": downAnswers
+                across : acrossAnswers,
+                down : downAnswers
             };
+            gridJSON["grid"] = grid;
+            gridJSON['parsedFromImage'] = "True";
         }
         
-        gridJSON["grid"] = grid;
-        gridJSON['clues'] = {
-            "across" : acrossClues,
-            "down": downClues
-        };
+        gridJSON['clues']['across'] =  acrossClues;
+        gridJSON['clues']['down'] =  downClues;
 
-        const overlay = document.querySelector(".overlay");   // to show the loading svg
-        overlay.style.display = 'flex';
-
-        
         console.log("Sending solve request for");
-        console.log(JSON.stringify(jsonObj));
+        console.log(JSON.stringify(gridJSON));
 
         // to bypass the 10s serverless function timout on VERCEL, the request to huggingface API
         // is made from the frontend
@@ -285,15 +293,14 @@ export default class Crossword{
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify(jsonObj)
+            body: JSON.stringify(gridJSON)
         })
         const jsonResponse = await response.json();
         
         console.log("The solution is");
         console.log(jsonResponse);
         
-        // Now to save the solution in the session the solution is sent to the route /solver/save
-        // retrieving the csrf token
+        // retrieving the CSRF token
         function getCookie(name) {
             let cookieValue = null;
             if (document.cookie && document.cookie !== '') {
@@ -309,8 +316,10 @@ export default class Crossword{
             }
             return cookieValue;
         }
+
         const csrftoken = getCookie('csrftoken');
-        // sending the save post request
+        
+        // sending the save post request to save the solution
         const postResponseToServer = await fetch("/solver/save-solution/",{
             method : "POST",
             headers:{
@@ -320,10 +329,22 @@ export default class Crossword{
             },
             body: JSON.stringify(jsonResponse)
         })
+
+        // sending the save post request to save the grid JSON just in case user messed up the json session variable
+        // sending the save post request to save the solution
+        const postJsonToServer = await fetch("/solver/save-json/",{
+            method : "POST",
+            headers:{
+                'Content-Type': 'application/json',
+                'X-CSRFToken': csrftoken
+
+            },
+            body: JSON.stringify(gridJSON)
+        })
         
         overlay.style.display = 'flex';
         
-        const windowLocation = postResponseToServer.url
+        const windowLocation = "/solver/solution/"
         window.location.href = windowLocation;
 
     }
@@ -366,7 +387,7 @@ export default class Crossword{
 
     increaseGrid() {
         if (this.dimension < 30){
-            // event listeners become semtically incorrect ( so remove them )
+            // event listeners become symmetrically incorrect ( so remove them )
             // later update correct ones using this.reinitializeAfterUpdate function
             this.removeCellEventListener(); 
 

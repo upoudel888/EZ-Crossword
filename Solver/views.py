@@ -1,13 +1,9 @@
 from django.shortcuts import render,HttpResponse,redirect
-from django.views.decorators.csrf import csrf_exempt
-# import cv2
-# import numpy as np
+from django.http import JsonResponse
 import json
 import puz
 import requests
 import tempfile
-# from .extractpuzzle import extract_grid,get_text
-# from .tasks import solvePuzzle69
 
 def get_JSON_from_puz(puz_file):
 
@@ -56,10 +52,11 @@ def get_JSON_from_puz(puz_file):
 
     return grid_data
 
-
+# 2D array[[row1],[row2]] where each element is [cell_number,gold_answer,predicted_answer]
+# Predicted answer is set to 0 initially
 def get_rows_and_clues(grid_data):
-    print(grid_data)
-    rows = []  # 2D array[[row1],[row2]] where each element is [cell_number,gold_answer,predicted_answer]
+
+    rows = []  
     no_of_rows = grid_data['size']['rows']
     no_of_cols = grid_data['size']['cols']
 
@@ -89,75 +86,11 @@ def solve(request):
         crossword_file = request.FILES['crossword_file']
 
         if crossword_file:
-            # # Image uploaded
-            # if crossword_file.content_type.startswith('image'):
-                
-
-            #     request.session['user_uploaded_image'] = True
-
-            #     # Get the image from the request
-            #     image = request.FILES.get('crossword_file')
-
-            #     # File was not received in the request
-            #     if image is None:
-            #         return redirect('/solver')
-
-            #     # Read the image using OpenCV
-            #     img_array = cv2.imdecode(np.frombuffer(image.read(), np.uint8), cv2.IMREAD_GRAYSCALE)
-                
-            #     try: # try extracting the grid from the image
-            #         # dict = { 'size' : size, 'grid' : grid, 'gridnums': grid_nums, 'across_nums': down_clue_num,'down_nums' : across_clue_num }
-            #         # grid_data = extract_grid(img_array)
-            #         grid_data = extract_grid
-            #         # Converting to parsable format for the template
-            #         rows,_,_ = get_rows_and_clues(grid_data)
-                    
-            #         # just initializing the dictionary with clue_number (as keys) deduced from the grid
-            #         # key=clue_number and value=clue
-            #         across_clues_dict = {}
-            #         down_clues_dict = {}
-            #         for i in grid_data['across_nums']:
-            #             across_clues_dict[i] = ''
-            #         for i in grid_data['down_nums']:
-            #             down_clues_dict[i] = ''
-
-            #         request.session['across_clues_dict'] =  across_clues_dict
-            #         request.session['down_clues_dict'] =  down_clues_dict
-
-            #         request.session['grid_extraction_failed'] = False
-            #         request.session['grid-rows'] = rows
+    
+            # Note that when user uploads an image, JS is used to parse it into corresponding JSON
+            # the JSON contains extra fields in that case i.e. :
+                 # "gridExtractionStatus":"Passed","ClueExtractionStatus":"Passed","parsedFromImage":"True"
             
-            #     except Exception as e:
-            #         request.session['grid_extraction_failed'] = True
-            #         print("Grid Extraction failed:", e)
-
-                
-            #     try: # try extracting clues
-            #         across, down = get_text(img_array) # { number : [column_of_projection_profile,extracted_text]}
-                    
-            #          # bringing clue number from the session
-            #         across_clues_dict = request.session.get('across_clues_dict')
-            #         down_clues_dict = request.session.get('down_clues_dict')
-
-            #         for key,value in across.items():
-            #             across_clues_dict[int(key)] = value[1]
-            #         for key,value in down.items():
-            #             down_clues_dict[int(key)] = value[1]
-                    
-            #         across_clues = [(key,value.strip(".").strip(" ").replace("|","l")) for key, value in across_clues_dict.items()]
-            #         down_clues = [(key,value.strip(".").strip(" ").replace("|","l")) for key, value in down_clues_dict.items()]
-
-            #         request.session['clue_extraction_failed'] = False
-            #         request.session['across_clues'] = across_clues
-            #         request.session['down_clues'] = down_clues
-
-            #     except Exception as e:
-            #         request.session['clue_extraction_failed'] = True
-            #         print("Clue Extraction failed:", e)
-
-            #     return redirect('Verify')
-
-
             # Json File Uploaded
             if crossword_file.content_type == 'application/json':
 
@@ -166,17 +99,8 @@ def solve(request):
                     return redirect('/solver')
                 
                 grid_data = json.loads(json_file.read())
-                rows,across_clues,down_clues = get_rows_and_clues(grid_data)
-                    
-                # updating the session
-                request.session['user_uploaded_image'] = False # used in verify.html
-                request.session['grid_extraction_failed'] = False   
-                request.session['clue_extraction_failed'] = False
-
-                request.session['grid-rows'] = rows # displayable format for UI
-                request.session['across_clues'] = across_clues
-                request.session['down_clues'] = down_clues
-                request.session['json'] = json.dumps(grid_data) # Used to solve the puzzle
+                # saving the data in session before redirecting
+                request.session['json'] = json.dumps(grid_data) 
 
                 return redirect('Verify')
                  
@@ -186,27 +110,17 @@ def solve(request):
                 
                 puz_file = request.FILES.get("crossword_file")
                 if puz_file is None:
-                    return redirect('/solver')
+                    return HttpResponse('Unparsable puz file format.')
                 
                 grid_data = get_JSON_from_puz(puz_file)
-
-                # extracting grid rows
-                rows,across_clues,down_clues = get_rows_and_clues(grid_data) 
-                
-                # updating the session
-                request.session['grid_extraction_failed'] = False
-                request.session['clue_extraction_failed'] = False
-
-                request.session['grid-rows'] = rows
-                request.session['across_clues'] = across_clues
-                request.session['down_clues'] = down_clues
+                # saving the data in session before redirecting
                 request.session['json'] = json.dumps(grid_data)
 
                 return redirect('Verify')
+            
             else:
                 return HttpResponse('Invalid file format.')
                    
-    return render(request,"Solver/solver.html",context=context)
 
 
 
@@ -215,18 +129,19 @@ def verify(request):
     context = {}
     
     if(request.method == "GET"):
-        # Extracting grid and clues from the session
-        grid_rows = request.session.get("grid-rows")
-        across_clues = request.session.get("across_clues")
-        down_clues = request.session.get("down_clues")
+        grid_data = json.loads(request.session.get('json'))
 
+        # Extracting the grid and clues from the JSON
+        grid_rows,across_clues,down_clues = get_rows_and_clues(grid_data)
+                    
+    
         # if clue extraction failed then don't show across and down clues
-        if(request.session.get("clue_extraction_failed")):
+        if(grid_data.get("clueExtractionStatus") and grid_data.get("clueExtractionStatus") != "Passed"):
             across_clues = [(1,""),(16,""),(17,""),(18,""),(19,""),(20,""),(21,""),(22,""),(23,""),(24,""),(25,""),(26,""),(27,""),(28,""),(29,"")]
             down_clues = [(1,""),(2,""),(3,""),(4,""),(5,""),(6,""),(7,""),(8,""),(9,""),(10,""),(11,""),(12,""),(13,""),(14,""),(15,"")]
             
-        # if grid extraction fails then show a 15 * 15 grid
-        if(request.session.get("grid_extraction_failed")):
+        # if grid extraction fails then show a 15 * 15 grid by default
+        if(grid_data.get("gridExtractionStatus") and grid_data.get("gridExtractionStatus") != "Passed"):
             nums = [[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15],  # default grid to display
                     [16,0,0,0,0,0,0,0,0,0,0,0,0,0,0,],
                     [17,0,0,0,0,0,0,0,0,0,0,0,0,0,0,],
@@ -248,37 +163,44 @@ def verify(request):
             for i in range(15):
                 temp = []
                 for j in range(15):
-                    temp.append((nums[i][j]," ",0))
+                    temp.append((nums[i][j],"A",0))
                 rows.append(temp)
             grid_rows = rows
 
-        context['grid_rows'] = grid_rows # Array of arrays 1st array element contains cell data for 1st and 1st columnrow as [ {grid_num},{grid-value}] format
+        # Array of arrays 1st array element contains cell data for 1st and 1st columnrow as [ {grid_num},{grid-value}] format
+        context['grid_rows'] = grid_rows 
         context['across_clues'] = across_clues
         context['down_clues'] = down_clues
-        context['json'] = request.session.get("json")
+        context['json'] = json.dumps(grid_data)
         context['solutions'] = 0
 
         return render(request,"Solver/verify.html",context=context)
 
 
+def saveModifiedJson(request):
+    if(request.method == "POST"):
+        received_json = json.loads(request.body.decode('utf-8'))  # decoding byte data to a string
+        request.session['json'] = json.dumps(received_json)
+        data = {"status": "Success", "message": "JSON saved successfully"}
+        return JsonResponse(data)
+
 def saveSolution(request):
     if( request.method == "POST"):
-
         received_solution = json.loads(request.body.decode('utf-8'))  # decoding byte data to a string
-        print(received_solution)
         request.session['solution'] = received_solution[0]
         request.session['evaluations'] = received_solution[1]
 
-        return redirect("Solution")
+        data = {"status": "Success", "message": "Solutions saved successfully"}
+        return JsonResponse(data)
 
 
-
-    
 def showSolution(request):
+    grid_data = json.loads(request.session.get('json'))
 
-    grid_rows = request.session.get("grid-rows")
-    across_clues = request.session.get("across_clues")
-    down_clues = request.session.get("down_clues")
+    # Extracting the grid and clues from the JSON
+    grid_rows,across_clues,down_clues = get_rows_and_clues(grid_data)
+
+
     solutions = request.session.get("solution")
     evaluations = request.session.get('evaluations')
 
@@ -293,6 +215,6 @@ def showSolution(request):
     context['across_clues'] = across_clues
     context['down_clues'] = down_clues
     context['evalutions'] = evaluations
-    context['user_uploaded_image'] = request.session.get("user_uploaded_image")
+    context['user_uploaded_image'] = True if  grid_data.get("parsedFromImage") == "True" else False
 
     return render(request,"Solver/solutions.html",context=context)
