@@ -1,97 +1,104 @@
 // handling drag and drop feature
-const dropContainer = document.getElementById("dropcontainer")
-const fileInput = document.getElementById("images")
+const dropContainer = document.getElementById("dropcontainer");
+const fileInput = document.getElementById("images");
 
-dropContainer.addEventListener("dragover", (e) => {
-  e.preventDefault()
-}, false)
+dropContainer.addEventListener(
+  "dragover",
+  (e) => {
+    e.preventDefault();
+  },
+  false
+);
 
 dropContainer.addEventListener("dragenter", () => {
-  dropContainer.classList.add("drag-active")
-})
+  dropContainer.classList.add("drag-active");
+});
 
 dropContainer.addEventListener("dragleave", () => {
-  dropContainer.classList.remove("drag-active")
-})
+  dropContainer.classList.remove("drag-active");
+});
 
 dropContainer.addEventListener("drop", (e) => {
-  e.preventDefault()
-  dropContainer.classList.remove("drag-active")
-  fileInput.files = e.dataTransfer.files
+  e.preventDefault();
+  dropContainer.classList.remove("drag-active");
+  fileInput.files = e.dataTransfer.files;
 });
 
 // retrieving the CSRF token
 function getCookie(name) {
   let cookieValue = null;
-  if (document.cookie && document.cookie !== '') {
-      const cookies = document.cookie.split(';');
-      for (let i = 0; i < cookies.length; i++) {
-          const cookie = cookies[i].trim();
-          // Does this cookie string begin with the name we want?
-          if (cookie.substring(0, name.length + 1) === (name + '=')) {
-              cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-              break;
-          }
+  if (document.cookie && document.cookie !== "") {
+    const cookies = document.cookie.split(";");
+    for (let i = 0; i < cookies.length; i++) {
+      const cookie = cookies[i].trim();
+      // Does this cookie string begin with the name we want?
+      if (cookie.substring(0, name.length + 1) === name + "=") {
+        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+        break;
       }
+    }
   }
   return cookieValue;
 }
 
-
 // handling default form submit behaviour
 
-function handleSubmit(event){
+function handleSubmit(event) {
   event.preventDefault(); // Prevents the default form submission
 
-  
   const form = event.target;
-  const fileInput = form.querySelector('#images');
+  const fileInput = form.querySelector("#images");
   const file = fileInput.files[0];
-  const allowedTypes = ['image/jpeg', 'image/png', 'image/jpg'];
-  
+  const allowedTypes = ["image/jpeg", "image/png", "image/jpg"];
+
   if (allowedTypes.includes(file.type)) {
-      const overlay = document.querySelector(".overlay");   // to show the loading svg
-      overlay.style.display = 'flex';
-      
-      const formData = new FormData();
-      formData.append('file', file);
+    const overlay = document.querySelector(".overlay"); // to show the loading svg
+    overlay.style.display = "flex";
 
-      console.log("Sending request to digitize crossword");
+    const formData = new FormData();
+    formData.append("file", file);
 
-      fetch('https://ujjwal123-digitizegrid.hf.space/parseImage/', {
-          method: 'POST',
+    console.log("Sending request to digitize crossword");
+
+    fetch("https://ujjwal123-digitizegrid.hf.space/parseImage/", {
+      method: "POST",
+      body: formData,
+    })
+      .then((response) => response.json())
+      .then((jsonData) => {
+        console.log("Received JSON:", jsonData);
+        const jsonBlob = new Blob([JSON.stringify(jsonData)], {
+          type: "application/json",
+        });
+        formData.delete("file");
+        formData.append("crossword_file", jsonBlob, "parsed.json");
+
+        const csrftoken = getCookie("csrftoken");
+
+        fetch(form.getAttribute("action"), {
+          method: "POST",
           body: formData,
-      })
-      .then(response => response.json())
-      .then(jsonData => {
-          console.log('Received JSON:', jsonData);
-          const jsonBlob = new Blob([JSON.stringify(jsonData)], { type: 'application/json' });
-          formData.delete('file');
-          formData.append('crossword_file', jsonBlob, 'parsed.json');
+          headers: {
+            "X-CSRFToken": csrftoken,
+          },
+        })
+          .then((response) => {
+            // handling the redirect response from django server
+            overlay.style.display = "none";
 
-          const csrftoken = getCookie('csrftoken');
-    
-          fetch(form.getAttribute('action'), {
-              method: 'POST',
-              body: formData,
-              headers :{
-                'X-CSRFToken': csrftoken,
-              }
-          })
-          .then(response => { // handling the redirect response from django server
-    
-            const windowLocation = response.url
+            const windowLocation = response.url;
             window.location.href = windowLocation;
           })
-          .catch(error => {
-              alert('Form submission error:', error);
+          .catch((error) => {
+            overlay.style.display = "none";
+            alert("Form submission error:", error);
           });
-        })
-      .catch(error => {
-          alert('Error parsing image:', error);
+      })
+      .catch((error) => {
+        overlay.style.display = "none";
+        alert("Error parsing image:", error);
       });
   } else {
-      form.submit(); // If it's not an image file, proceed with default form submission
+    form.submit(); // If it's not an image file, proceed with default form submission
   }
-  overlay.style.display = 'none';
 }
