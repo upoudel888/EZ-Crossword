@@ -235,6 +235,24 @@ export default class Crossword {
     const overlay = document.querySelector(".overlay");
     overlay.style.display = "flex";
 
+    let startTime = Date.now();
+    let elapsedTime = 0;
+
+    const timeElapsedDiv = document.querySelector(".time-elapsed");
+
+    const timerInterval = setInterval(() => {
+      elapsedTime = Date.now() - startTime;
+      const minutes = Math.floor(elapsedTime / 60000);
+      const seconds = ((elapsedTime % 60000) / 1000).toFixed(0);
+      let timeText = "";
+      if (minutes) {
+        timeText = `Time Elapsed : ${minutes}m ${seconds}s`;
+      } else {
+        timeText = `Time Elapsed : ${seconds}s`;
+      }
+      timeElapsedDiv.innerHTML = timeText;
+    }, 1000); // Update time every second
+
     //     # final JSON format
     // grid_data = {'size': { 'rows': p.height, 'cols': p.width},
     //              'clues': {'across': across_clues, 'down': down_clues},
@@ -363,7 +381,8 @@ export default class Crossword {
       body: JSON.stringify(gridJSON),
     });
 
-    overlay.style.display = "flex";
+    clearInterval(timerInterval); // stopping the timer
+    overlay.style.display = "none";
 
     const windowLocation = "/solver/solution/";
     window.location.href = windowLocation;

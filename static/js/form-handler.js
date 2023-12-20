@@ -55,6 +55,24 @@ function handleSubmit(event) {
     const overlay = document.querySelector(".overlay"); // to show the loading svg
     overlay.style.display = "flex";
 
+    let startTime = Date.now();
+    let elapsedTime = 0;
+
+    const timeElapsedDiv = document.querySelector(".time-elapsed");
+
+    const timerInterval = setInterval(() => {
+      elapsedTime = Date.now() - startTime;
+      const minutes = Math.floor(elapsedTime / 60000);
+      const seconds = ((elapsedTime % 60000) / 1000).toFixed(0);
+      let timeText = "";
+      if (minutes) {
+        timeText = `Time Elapsed : ${minutes}m ${seconds}s`;
+      } else {
+        timeText = `Time Elapsed : ${seconds}s`;
+      }
+      timeElapsedDiv.innerHTML = timeText;
+    }, 1000); // Update time every second
+
     const formData = new FormData();
     formData.append("file", file);
 
@@ -84,17 +102,20 @@ function handleSubmit(event) {
         })
           .then((response) => {
             // handling the redirect response from django server
+            clearInterval(timerInterval); // stopping the timer
             overlay.style.display = "none";
 
             const windowLocation = response.url;
             window.location.href = windowLocation;
           })
           .catch((error) => {
+            clearInterval(timerInterval); // stopping the timer
             overlay.style.display = "none";
             alert("Form submission error:", error);
           });
       })
       .catch((error) => {
+        clearInterval(timerInterval); // stopping the timer
         overlay.style.display = "none";
         alert("Error parsing image:", error);
       });
