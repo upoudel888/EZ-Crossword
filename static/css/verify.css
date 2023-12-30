@@ -37,11 +37,6 @@
 .note{
     font-size: var(--font-size-small);
 }
-.bold{
-    font-weight: bold;
-    font-size: 1rem;
-}
-
 
 .crossword{
     display: flex;

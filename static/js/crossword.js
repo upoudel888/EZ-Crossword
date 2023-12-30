@@ -229,39 +229,8 @@ export default class Crossword {
     this.dimensionInfo.innerText = `${this.dimension} X ${this.dimension}`;
   }
 
-  // this function is triggered when user clicks proceed button
-  async makeSolveRequest() {
-    // show the loading SVG
-    const overlay = document.querySelector(".overlay");
-    overlay.style.display = "flex";
-
-    let startTime = Date.now();
-    let elapsedTime = 0;
-
-    const timeElapsedDiv = document.querySelector(".time-elapsed");
-
-    const timerInterval = setInterval(() => {
-      elapsedTime = Date.now() - startTime;
-      const minutes = Math.floor(elapsedTime / 60000);
-      const seconds = ((elapsedTime % 60000) / 1000).toFixed(0);
-      let timeText = "";
-      if (minutes) {
-        timeText = `Time Elapsed : ${minutes}m ${seconds}s`;
-      } else {
-        timeText = `Time Elapsed : ${seconds}s`;
-      }
-      timeElapsedDiv.innerHTML = timeText;
-    }, 1000); // Update time every second
-
-    //     # final JSON format
-    // grid_data = {'size': { 'rows': p.height, 'cols': p.width},
-    //              'clues': {'across': across_clues, 'down': down_clues},
-    //              'grid': grid,
-    //              'gridnums':gridnum,
-    //              'answers':{'across':across_answer,'down':down_answer}
-    //             }
-
-    // Making the JSON data ready
+  getJSONForSolving() {
+    // Making the JSON data of the puzzle ready
     let gridJSON = {
       size: { rows: this.dimension, cols: this.dimension },
       clues: { across: [], down: [] },
@@ -321,11 +290,39 @@ export default class Crossword {
     gridJSON["clues"]["across"] = acrossClues;
     gridJSON["clues"]["down"] = downClues;
 
-    console.log("Sending solve request for");
-    console.log(JSON.stringify(gridJSON));
+    return gridJSON;
+  }
 
-    // to bypass the 10s serverless function timout on VERCEL, the request to huggingface API
-    //  the request is made from the frontend
+  // this function is triggered when user clicks proceed button
+  async makeSolveRequest() {
+    // show the loading SVG
+    const overlay = document.querySelector(".overlay");
+    
+    overlay.style.display = "flex";
+    
+    let startTime = Date.now();
+    let elapsedTime = 0;
+    
+    const jobStatus = document.querySelector(".job-status");
+    const timeElapsedDiv = document.querySelector(".time-elapsed");
+
+    // updating time elapsed every second
+    const timerInterval = setInterval(() => {
+      elapsedTime = Date.now() - startTime;
+      const minutes = Math.floor(elapsedTime / 60000);
+      const seconds = ((elapsedTime % 60000) / 1000).toFixed(0);
+      let timeText = "";
+      if (minutes) {
+        timeText = `${minutes}m ${seconds}s`;
+      } else {
+        timeText = `${seconds}s`;
+      }
+      timeElapsedDiv.innerHTML = timeText;
+    }, 1000);
+
+    let gridJSON = this.getJSONForSolving();
+
+    // sending solve request to the solver
     const response = await fetch(
       "https://ujjwal123-ez-crossword.hf.space/solve",
       {
@@ -337,10 +334,45 @@ export default class Crossword {
       }
     );
     const jsonResponse = await response.json();
+    let checkInterval;
 
-    console.log("The solution is");
-    console.log(jsonResponse);
+    const checkStatus = async () => {
+      const response = await fetch(
+        `https://ujjwal123-ez-crossword.hf.space/result/${jsonResponse.job_id}`
+      );
+      const statusResponse = await response.json();
 
+      if (statusResponse.status === "completed") {
+        console.log("The result is:", statusResponse.result);
+        jobStatus.innerHTML = "Completed";
+        timeElapsedDiv.innerHTML = "0s";
+
+        clearInterval(checkInterval); // stoppping the polling requests
+        clearInterval(timerInterval); // stopping the timer
+        this.showReceivedResult(gridJSON, statusResponse.result);
+
+        overlay.style.display = "none";
+      } else if (statusResponse.status === "processing") {
+        jobStatus.innerHTML = "Currently Processing";
+
+      } else if (statusResponse.status === "queued") {
+        jobStatus.innerHTML = `Enqueued in ${statusResponse.queue_status['index']} / ${statusResponse.queue_status['length']}`;
+      } else if (statusResponse.status === "error") {
+        console.error("There was an error processing the task.");
+        clearInterval(checkInterval);
+      }
+    };
+
+    checkStatus();
+
+    // after 45 seconds periodically check the status of the request to check if it is completed
+    setTimeout(() => {
+      checkInterval = setInterval(checkStatus, 5000);
+    }, 40000);
+
+  }
+
+  async showReceivedResult(gridJSON, result) {
     // retrieving the CSRF token
     function getCookie(name) {
       let cookieValue = null;
@@ -367,11 +399,10 @@ export default class Crossword {
         "Content-Type": "application/json",
         "X-CSRFToken": csrftoken,
       },
-      body: JSON.stringify(jsonResponse),
+      body: JSON.stringify(result),
     });
 
     // sending the save post request to save the grid JSON just in case user messed up the json session variable
-    // sending the save post request to save the solution
     const postJsonToServer = await fetch("/solver/save-json/", {
       method: "POST",
       headers: {
@@ -380,9 +411,6 @@ export default class Crossword {
       },
       body: JSON.stringify(gridJSON),
     });
-
-    clearInterval(timerInterval); // stopping the timer
-    overlay.style.display = "none";
 
     const windowLocation = "/solver/solution/";
     window.location.href = windowLocation;

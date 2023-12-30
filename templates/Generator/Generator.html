@@ -1,0 +1,57 @@
+{% extends 'Home/base.html' %}
+
+{% load static %}
+ 
+{% block css %} 
+<link rel="stylesheet" href={% static "css/generator.css"%}> 
+{% endblock css %} 
+
+{% block hero %}
+<div class="get-started">
+  <h1 class="emphasis-text">Generate Crosswords Using AI.</h1>
+  <span class="">Choose the Required Dimension</span>
+</div>
+
+<form action="/generator/" id="crosswordForm" method="POST">
+  {% csrf_token %}
+  <label for="row">Rows:</label>
+  <input type="number" id="row" name="row" min="4" max="21" value="4" readonly/>
+
+  <label for="col">Columns:</label>
+  <input type="number" id="col" name="col" min="4" max="21" value="4" readonly/>
+
+  <button type="button" id="decrease">-</button>
+  <button type="button" id="increase">+</button>
+
+  <input type="submit" value="Generate" />
+</form>
+<div class="generator-hero"></div>
+{% endblock hero %}
+
+{% block script %}
+<script>
+  document.getElementById("decrease").addEventListener("click", function () {
+    decreaseValue("row");
+    decreaseValue("col");
+  });
+
+  document.getElementById("increase").addEventListener("click", function () {
+    increaseValue("row");
+    increaseValue("col");
+  });
+
+  function decreaseValue(id) {
+    var currentValue = parseInt(document.getElementById(id).value, 10);
+    if (!isNaN(currentValue) && currentValue > 4) {
+      document.getElementById(id).value = currentValue - 1;
+    }
+  }
+
+  function increaseValue(id) {
+    var currentValue = parseInt(document.getElementById(id).value, 10);
+    if (!isNaN(currentValue) && currentValue < 21) {
+      document.getElementById(id).value = currentValue + 1;
+    }
+  }
+</script>
+{% endblock script %}
