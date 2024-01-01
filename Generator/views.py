@@ -1,3 +1,4 @@
+from django.http import HttpResponse
 from django.shortcuts import redirect, render
 from .generate_grid import generateGrid
 import json
@@ -32,15 +33,42 @@ def generate(request):
     if(request.method == "GET"):
         return render(request,"Generator/Generator.html")
     if(request.method == "POST"):
-        context = {}
         row_value = int(request.POST.get('row'))
         grid_data = generateGrid(row_value)
-        print(grid_data)
-        grid_rows,across_clues,down_clues = get_rows_and_clues(grid_data)
-        context['grid_rows'] = grid_rows 
-        context['across_clues'] = across_clues
-        context['down_clues'] = down_clues
-        context['json'] = json.dumps(grid_data)
-        context['solutions'] = 0
+        request.session['json'] = json.dumps(grid_data)
+        return redirect("generation_result")
+    
+def showGeneratedCrossword(request):
+    if(request.method == "GET"):
+        context = {}
+        grid_data = json.loads(request.session.get("json"))
+        if(grid_data):
+            grid_rows,across_clues,down_clues = get_rows_and_clues(grid_data)
+            context['grid_rows'] = grid_rows 
+            context['across_clues'] = across_clues
+            context['down_clues'] = down_clues
+            context['across_nums'] = grid_data['across_nums']
+            context['down_nums'] = grid_data['down_nums']
+            context['json'] = json.dumps(grid_data)
+            context['solutions'] = 0
+            return render(request,"Generator/Result.html",context=context)
+        else:
+            return HttpResponse("The Generator did not generate the puzzle.")
 
-        return render(request,"Solver/verify.html",context=context)
+def download_json(request):
+    json_data = json.loads(request.session.get('json'))
+
+    if json_data:
+        # Converting JSON data to a string
+        json_string = json.dumps(json_data, indent=4)
+
+        # Creating an HTTP response with JSON content type
+        response = HttpResponse(json_string, content_type='application/json')
+
+        # Set the content-disposition header to force download
+        response['Content-Disposition'] = 'attachment; filename="crossword.json"'
+        
+        return response
+    else:
+        # Handle case when 'json' key is not found in session
+        return HttpResponse("JSON data not found in session.")

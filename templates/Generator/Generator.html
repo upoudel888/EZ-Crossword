@@ -3,28 +3,41 @@
 {% load static %}
  
 {% block css %} 
+<link rel="stylesheet" href={% static "css/solver.css"%}> 
 <link rel="stylesheet" href={% static "css/generator.css"%}> 
 {% endblock css %} 
 
 {% block hero %}
 <div class="get-started">
   <h1 class="emphasis-text">Generate Crosswords Using AI.</h1>
-  <span class="">Choose the Required Dimension</span>
+  <span class="">Choose Dimensions to Get Started</span>
 </div>
 
-<form action="/generator/" id="crosswordForm" method="POST">
-  {% csrf_token %}
-  <label for="row">Rows:</label>
-  <input type="number" id="row" name="row" min="4" max="21" value="4" readonly/>
+<div class="solver-hero">
+  <div class="solver-upload-info">
+      <img src={% static 'images/generation-final.png'%} class = "solver-illus generator-illus" alt="Crossword Solver Illustration">
+    </div>
+  <div class="form-container">     
 
-  <label for="col">Columns:</label>
-  <input type="number" id="col" name="col" min="4" max="21" value="4" readonly/>
+      <form action="/generator/" class = "form-inner" id="crosswordForm" method="POST">
+        {% csrf_token %}
+        <div class="drop-container">
+          <span class=" drop-title bold">Adjust Grid Dimensions </span>
+          Row : Col
+          <div class="input-fields-container">
+            <button type="button" class = "btn-dim" id="decrease">-</button>
+            <input type="number" id="row" name="row" min="4" max="21" value="4" readonly/>
+            <span>:</span>
+            <input type="number" id="col" name="col" min="4" max="21" value="4" readonly/>
+            <button type="button" class = "btn-dim" id="increase">+</button>
+          </div>
+        </div>
+        <input class="custom-btn btn-11" type="submit" value="Generate" />
+      </form>
+  </div>
+</div>
 
-  <button type="button" id="decrease">-</button>
-  <button type="button" id="increase">+</button>
 
-  <input type="submit" value="Generate" />
-</form>
 <div class="generator-hero"></div>
 {% endblock hero %}
 

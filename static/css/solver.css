@@ -163,7 +163,7 @@ input[type=file]::file-selector-button {
         left: 0;
         top: -1.6rem;
     }
-    img.solver-illus{
+    img.solver-illus,img.solver-illus.generator-illus{
         width: 102%;
         height: 102%;
     }

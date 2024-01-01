@@ -257,7 +257,7 @@
 }
 
 @media screen and (max-width: 37rem){
-    nav,footer{
+    nav,footer,.overlay{
         width: 37rem !important;
     }
 }

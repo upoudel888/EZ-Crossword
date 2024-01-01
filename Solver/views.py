@@ -71,13 +71,17 @@ def get_rows_and_clues(grid_data):
         def separate_num_clues(clue):
             arr = clue.split(".")
             return (arr[0],"".join(arr[1:]))
-
+    except:
+        rows = []
+    
+    try:
         across_clues = [separate_num_clues(i) for i in grid_data['clues']['across']] # array of (clue_num,clue)
         down_clues = [separate_num_clues(i) for i in grid_data['clues']['down']]
-
-        return rows,across_clues,down_clues
     except:
-        return [],[],[]
+        across_clues = []
+        down_clues = []
+
+    return rows,across_clues,down_clues
 
 
 def solve(request):
@@ -137,15 +141,17 @@ def verify(request):
 
         # Extracting the grid and clues from the JSON
         grid_rows,across_clues,down_clues = get_rows_and_clues(grid_data)
-                    
+        
     
         # if clue extraction failed then don't show across and down clues
-        if(grid_data.get("clueExtractionStatus") and grid_data.get("clueExtractionStatus") != "Passed"):
+        if(across_clues == []):
             across_clues = [(1,""),(16,""),(17,""),(18,""),(19,""),(20,""),(21,""),(22,""),(23,""),(24,""),(25,""),(26,""),(27,""),(28,""),(29,"")]
+        if(down_clues == []):
             down_clues = [(1,""),(2,""),(3,""),(4,""),(5,""),(6,""),(7,""),(8,""),(9,""),(10,""),(11,""),(12,""),(13,""),(14,""),(15,"")]
-            
         # if grid extraction fails then show a 15 * 15 grid by default
-        if(grid_data.get("gridExtractionStatus") and grid_data.get("gridExtractionStatus") != "Passed"):
+        # there's no "grid" key if grid extraction failed completely
+        # there is a grid property but it has no elements if border line approximation went wrong
+        if((grid_data.get("gridExtractionStatus") and grid_data.get("gridExtractionStatus") != "Passed") or grid_rows == []):
             nums = [[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15],  # default grid to display
                     [16,0,0,0,0,0,0,0,0,0,0,0,0,0,0,],
                     [17,0,0,0,0,0,0,0,0,0,0,0,0,0,0,],

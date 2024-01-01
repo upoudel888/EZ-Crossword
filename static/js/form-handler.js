@@ -59,6 +59,8 @@ function handleSubmit(event) {
     let elapsedTime = 0;
 
     const timeElapsedDiv = document.querySelector(".time-elapsed");
+    const jobStatusDiv = document.querySelector(".job-status-contianer");
+    jobStatusDiv.style.display = "none";
 
     const timerInterval = setInterval(() => {
       elapsedTime = Date.now() - startTime;
@@ -66,9 +68,9 @@ function handleSubmit(event) {
       const seconds = ((elapsedTime % 60000) / 1000).toFixed(0);
       let timeText = "";
       if (minutes) {
-        timeText = `Time Elapsed : ${minutes}m ${seconds}s`;
+        timeText = `${minutes}m ${seconds}s`;
       } else {
-        timeText = `Time Elapsed : ${seconds}s`;
+        timeText = `${seconds}s`;
       }
       timeElapsedDiv.innerHTML = timeText;
     }, 1000); // Update time every second

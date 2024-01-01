@@ -257,6 +257,10 @@ export default class Crossword {
     let jsonObj = JSON.parse(jsonDiv.innerHTML);
 
     for (let clue_num of this.across_nums) {
+      if (!this.acrossCluesWithNums[clue_num]) {
+        alert(`Clue for ${clue_num} across is missing. Please check thoroughly before proceeding.`);
+        return false;
+      }
       acrossClues.push(
         String(clue_num) + ". " + this.acrossCluesWithNums[clue_num]
       );
@@ -265,6 +269,10 @@ export default class Crossword {
       );
     }
     for (let clue_num of this.down_nums) {
+      if (!this.downCluesWithNums[clue_num]) {
+        alert(`Clue for ${clue_num} down is missing. Please check thoroughly before proceding.`);
+        return false;
+      }
       downClues.push(
         String(clue_num) + ". " + this.downCluesWithNums[clue_num]
       );
@@ -297,12 +305,14 @@ export default class Crossword {
   async makeSolveRequest() {
     // show the loading SVG
     const overlay = document.querySelector(".overlay");
-    
+    let gridJSON = this.getJSONForSolving();
+    if (gridJSON === false) return;
+
     overlay.style.display = "flex";
-    
+
     let startTime = Date.now();
     let elapsedTime = 0;
-    
+
     const jobStatus = document.querySelector(".job-status");
     const timeElapsedDiv = document.querySelector(".time-elapsed");
 
@@ -319,8 +329,6 @@ export default class Crossword {
       }
       timeElapsedDiv.innerHTML = timeText;
     }, 1000);
-
-    let gridJSON = this.getJSONForSolving();
 
     // sending solve request to the solver
     const response = await fetch(
@@ -354,9 +362,8 @@ export default class Crossword {
         overlay.style.display = "none";
       } else if (statusResponse.status === "processing") {
         jobStatus.innerHTML = "Currently Processing";
-
       } else if (statusResponse.status === "queued") {
-        jobStatus.innerHTML = `Enqueued in ${statusResponse.queue_status['index']} / ${statusResponse.queue_status['length']}`;
+        jobStatus.innerHTML = `Enqueued in ${statusResponse.queue_status["index"]} / ${statusResponse.queue_status["length"]}`;
       } else if (statusResponse.status === "error") {
         console.error("There was an error processing the task.");
         clearInterval(checkInterval);
@@ -369,7 +376,6 @@ export default class Crossword {
     setTimeout(() => {
       checkInterval = setInterval(checkStatus, 5000);
     }, 40000);
-
   }
 
   async showReceivedResult(gridJSON, result) {
