@@ -1,6 +1,6 @@
 from django.http import HttpResponse
 from django.shortcuts import redirect, render
-from .generate_grid import generateGrid
+from .grid_generator import generate_grid
 import json
 # Create your views here.
 def get_rows_and_clues(grid_data):
@@ -34,7 +34,7 @@ def generate(request):
         return render(request,"Generator/Generator.html")
     if(request.method == "POST"):
         row_value = int(request.POST.get('row'))
-        grid_data = generateGrid(row_value)
+        grid_data = generate_grid(row_value)
         request.session['json'] = json.dumps(grid_data)
         return redirect("generation_result")
     

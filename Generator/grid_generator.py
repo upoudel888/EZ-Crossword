@@ -1,7 +1,7 @@
 import random
 from math import ceil
 
-def returnJSON(grid_formatted,rows,cols):
+def returnJSON(grid_formatted, rows,cols):
     grid = []
     grid_nums = []
     across_clue_num = []
@@ -10,7 +10,7 @@ def returnJSON(grid_formatted,rows,cols):
     in_horizontal = []
     in_vertical = []
 
-    
+
     num = 0
 
     for x in range(0, cols ):
@@ -25,7 +25,7 @@ def returnJSON(grid_formatted,rows,cols):
             horizontal_presence = (x, y) in in_horizontal
             vertical_presence = (x, y) in in_vertical
 
-            # present in both 1 1 
+            # present in both 1 1
             if horizontal_presence and vertical_presence:
                 grid_nums.append(0)
                 continue
@@ -46,7 +46,7 @@ def returnJSON(grid_formatted,rows,cols):
                     grid_nums.append(num)
                     continue
                 grid_nums.append(0)
-            # present in one 1 0        
+            # present in one 1 0
             if not vertical_presence and horizontal_presence:
                 # do the same for vertical
                 vertical_length = 0
@@ -63,7 +63,7 @@ def returnJSON(grid_formatted,rows,cols):
                     grid_nums.append(num)
                     continue
                 grid_nums.append(0)
-            
+
             if(not horizontal_presence and not vertical_presence):
 
                 horizontal_length = 0
@@ -73,7 +73,7 @@ def returnJSON(grid_formatted,rows,cols):
                     temp_horizontal_arr.append((x + horizontal_length, y))
                     horizontal_length += 1
                 # if horizontal length is greater than 1, then append the temp_horizontal_arr to in_horizontal array
-                                    
+
                 # do the same for vertical
                 vertical_length = 0
                 temp_vertical_arr = []
@@ -82,7 +82,7 @@ def returnJSON(grid_formatted,rows,cols):
                     temp_vertical_arr.append((x, y+vertical_length))
                     vertical_length += 1
                 # if vertical length is greater than 1, then append the temp_vertical_arr to in_vertical array
-                
+
                 if horizontal_length > 1 and horizontal_length > 1:
                     in_horizontal.extend(temp_horizontal_arr)
                     in_vertical.extend(temp_vertical_arr)
@@ -107,8 +107,7 @@ def returnJSON(grid_formatted,rows,cols):
     size = { 'rows' : rows,
             'cols' : cols,
             }
-    
-    
+
     dict = {
         'size' : size,
         'grid' : sum(grid_formatted, []),
@@ -120,7 +119,7 @@ def returnJSON(grid_formatted,rows,cols):
             'down':[]
         }
     }
-    
+
     return dict
 
 def check_status(grid):
@@ -152,7 +151,7 @@ def check_status(grid):
                     return False
     return True
 
-def check_series(grid, start_row, start_column, row_increment, column_increment, min_count=3):
+def check_series(grid, start_row, start_column, row_increment, column_increment, min_count = 3):
     """
     Check if a valid series of at least min_count exists in a specific direction
     starting from the given position.
@@ -194,7 +193,7 @@ def create_crossword_grid(rows, cols):
     grid = [[' ' for _ in range(cols)] for _ in range(rows)]
     return grid
 
-def add_black_squares(grid):
+def add_black_squares(grid, max_iters = 600):
     """
     Add black squares to the crossword grid based on probability calculations.
 
@@ -208,13 +207,18 @@ def add_black_squares(grid):
     black_tiles = []
     white_tiles = [x for x in range(len(grid) * len(grid[0])) if x not in black_tiles]
     needed_black = ceil(len(grid) * len(grid[0]) / 6)
-    max_iterations = 1000  # Set a reasonable maximum iteration count
+    max_iterations = max_iters  # Set a reasonable maximum iteration count
 
     iterations = 0
-    while len(black_tiles) < needed_black and iterations < max_iterations:
+
+    while iterations < max_iterations:
+        if len(black_tiles) >= needed_black:
+            break
         # Check for empty columns and rows
         empty_columns = [col for col in range(len(grid[0])) if all(row[col] == ' ' for row in grid)]
         empty_rows = [row for row in range(len(grid)) if all(cell == ' ' for cell in grid[row])]
+
+        # print(empty_columns, empty_rows)
 
         # Ensure that empty rows and columns cannot exist for grids larger than size 7
         if len(grid) > 7:
@@ -256,13 +260,25 @@ def add_black_squares(grid):
                 white_tiles.remove(row * len(grid[0]) + col)
 
         iterations += 1
-    return grid
+    return grid, iterations
 
-def generateGrid(grid_size):
+def generate_grid(grid_size = 15, max_iters = 600):
     rows = cols = grid_size
-    crossword_grid = create_crossword_grid(rows, cols)
-    print(crossword_grid)
-    crossword_grid = add_black_squares(crossword_grid)
+
+    no_ran_iters = max_iters
+
+    if grid_size != 4:
+      while no_ran_iters == max_iters:
+        crossword_grid = create_crossword_grid(rows, cols)
+        crossword_grid, no_ran_iters = add_black_squares(crossword_grid, max_iters)
+    else:
+      crossword_grid = create_crossword_grid(rows, cols)
+      crossword_grid, no_ran_iters = add_black_squares(crossword_grid, max_iters)
+
+    # pprint(crossword_grid)
+
+    # json data
     json_data = returnJSON(crossword_grid, rows, cols)
     return json_data
 
+generate_grid(grid_size = 15)
