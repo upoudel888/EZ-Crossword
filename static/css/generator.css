@@ -24,6 +24,7 @@
   width: 33rem;
   height: auto;
   object-fit: cover !important;
+  margin-top: 2rem;
 }
 
 .form-container {
@@ -94,3 +95,4 @@
 .grid-cell{
     cursor: auto;
 }
+

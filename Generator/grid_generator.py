@@ -1,8 +1,7 @@
 import random
-from math import ceil
+from math import floor
 
 def returnJSON(grid_formatted, rows,cols):
-    grid = []
     grid_nums = []
     across_clue_num = []
     down_clue_num = []
@@ -206,7 +205,7 @@ def add_black_squares(grid, max_iters = 600):
     """
     black_tiles = []
     white_tiles = [x for x in range(len(grid) * len(grid[0])) if x not in black_tiles]
-    needed_black = ceil(len(grid) * len(grid[0]) / 6)
+    needed_black = floor(len(grid) * len(grid[0]) / 6)
     max_iterations = max_iters  # Set a reasonable maximum iteration count
 
     iterations = 0
