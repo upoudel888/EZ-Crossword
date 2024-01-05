@@ -2,6 +2,7 @@ import random
 from math import floor
 
 def returnJSON(grid_formatted, rows,cols):
+    grid = []
     grid_nums = []
     across_clue_num = []
     down_clue_num = []
@@ -192,6 +193,18 @@ def create_crossword_grid(rows, cols):
     grid = [[' ' for _ in range(cols)] for _ in range(rows)]
     return grid
 
+def get_symmetric_tiles(symmetry, row, col, grid_size):
+  if symmetry == 'diagonal':
+    sym_row = grid_size - 1 - row
+    sym_col = grid_size - 1 - col
+  elif symmetry == 'horizontal':
+    sym_row = grid_size - 1 - row
+    sym_col = col
+  else:
+    sym_row = row
+    sym_col = grid_size - 1 - col
+  return sym_row, sym_col
+    
 def add_black_squares(grid, max_iters = 600):
     """
     Add black squares to the crossword grid based on probability calculations.
@@ -207,6 +220,17 @@ def add_black_squares(grid, max_iters = 600):
     white_tiles = [x for x in range(len(grid) * len(grid[0])) if x not in black_tiles]
     needed_black = floor(len(grid) * len(grid[0]) / 6)
     max_iterations = max_iters  # Set a reasonable maximum iteration count
+
+    if len(grid) <= 7:
+        symmetry = "diagonal"
+    else:
+        randNum = random.random()
+        if randNum < 0.7:
+            symmetry = 'diagonal'
+        elif 0.7 <= randNum < 0.85:
+            symmetry = 'vertical'
+        else:
+            symmetry = 'horizontal'
 
     iterations = 0
 
@@ -247,8 +271,8 @@ def add_black_squares(grid, max_iters = 600):
 
         if grid[row][col] == ' ' and random.random() < max(odds_row, odds_col, odds_corner):
             grid[row][col] = '.'
-            sym_row = len(grid) - 1 - row
-            sym_col = len(grid[0]) - 1 - col
+            sym_row, sym_col = get_symmetric_tiles(symmetry, row, col, len(grid))
+            
             grid[sym_row][sym_col] = '.'
 
             if not check_status(grid):
@@ -280,4 +304,3 @@ def generate_grid(grid_size = 15, max_iters = 600):
     json_data = returnJSON(crossword_grid, rows, cols)
     return json_data
 
-generate_grid(grid_size = 15)
