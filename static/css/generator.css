@@ -27,13 +27,6 @@
   margin-top: 2rem;
 }
 
-.form-container {
-  background-color: var(--secondary-purple-dark);
-}
-
-.form-inner {
-  box-shadow: 0 0 4px var(--secondary-purple-dark);
-}
 
 .solver-hero {
   gap: 2rem;
@@ -42,7 +35,7 @@
 .btn-dim {
   border: none;
   cursor: pointer;
-  background-color: var(--secondary-purple-dark);
+  background-color: var(--secondary-blue);
   color: white;
   font-size: 2rem;
   padding: 0 1rem;
@@ -50,12 +43,12 @@
 }
 
 .btn-dim:hover {
-  box-shadow: 0 0 2px #b079bc;
+  box-shadow: 0 0 2px var(--secondary-blue);
   transform: scale(1.03);
 }
 
 .input-fields-container {
-  background-color: var(--secondary-purple);
+  background-color: var(--secondary-blue-light);
   font-size: 2rem;
   line-height: 2rem;
   color: black;
@@ -78,15 +71,6 @@
   background-color: white;
 }
 
-.note-ribbon {
-  background-color: var(--secondary-purple-dark);
-}
-.special-note {
-  box-shadow: 0 7px 0 0 var(--secondary-purple-darker);
-}
-.clue-text{
-    background-color: var(--secondary-purple);
-}
 
 .grid-cell:hover {
     box-shadow: none;
