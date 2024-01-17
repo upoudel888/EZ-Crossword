@@ -231,7 +231,6 @@ def add_black_squares(grid, max_iters = 600):
             symmetry = 'vertical'
         else:
             symmetry = 'horizontal'
-
     iterations = 0
 
     while iterations < max_iterations:

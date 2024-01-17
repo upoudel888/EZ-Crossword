@@ -3,6 +3,7 @@
 
 {% block css %}
     <link rel="stylesheet" href= {%static "css/verify.css" %}>
+    <link rel="stylesheet" href= {%static "css/solutions.css" %}>
 {% endblock css %}
 
 {% block script %}
@@ -25,11 +26,14 @@
                 {% endif %}
             <a href={% url 'Solver' %}><button class="custom-btn proceed-button btn-11">Solve Next</button></a>
         </div>
+        <div class="reveal-btn">
+            <span class="icon"><i class="fa-solid fa-eye"></i></span>
+            <span>Reveal Answers</span>
+        </div>
     </div>
 
-
-
     <div class="crossword">
+        
         <div class="grid-and-options">
             <div class="grid">
                 {% for row_data in grid_rows %}

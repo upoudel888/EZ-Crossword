@@ -39,6 +39,12 @@ export default class Crossword {
     }
   }
 
+  async revealAll(){
+    this.cells.forEach((cell)=>{
+      cell.classList.toggle("reveal");
+    });
+  }
+
   async highlight() {
     function sleep(ms) {
       return new Promise((resolve) => setTimeout(resolve, ms));
@@ -95,7 +101,7 @@ export default class Crossword {
         }
 
         // reverse the process
-        await sleep(300);
+        await sleep(50);
 
         currentlyHighlightingClue.firstElementChild.style.backgroundColor =
           "white";
@@ -115,12 +121,6 @@ export default class Crossword {
 
         currentlyHighlightingClue.style.cursor = "pointer"; // add event listener
         currentlyHighlightingClue.addEventListener("click", () => {
-          // remove every other highlight classes
-          let highlighted = document.querySelectorAll(".highlight");
-          highlighted.forEach((elem) => {
-            elem.classList.remove("highlight");
-          });
-
           currentlyHighlightingClue.classList.toggle("highlight");
           currentlyHighlightingCellsPos.forEach((pos2) => {
             this.cells[pos2].classList.toggle("highlight");
@@ -172,7 +172,7 @@ export default class Crossword {
         }
 
         // reverse the process
-        await sleep(300);
+        await sleep(50);
 
         currentlyHighlightingClue.firstElementChild.style.backgroundColor =
           "white";
@@ -194,10 +194,6 @@ export default class Crossword {
         currentlyHighlightingClue.style.cursor = "pointer"; // add event listener
         currentlyHighlightingClue.addEventListener("click", () => {
           // remove every other highlight classes
-          let highlighted = document.querySelectorAll(".highlight");
-          highlighted.forEach((elem) => {
-            elem.classList.remove("highlight");
-          });
           currentlyHighlightingClue.classList.toggle("highlight");
           currentlyHighlightingCellsPos.forEach((pos2) => {
             this.cells[pos2].classList.toggle("highlight");
@@ -359,7 +355,6 @@ export default class Crossword {
         clearInterval(timerInterval); // stopping the timer
         this.showReceivedResult(gridJSON, statusResponse.result);
 
-        overlay.style.display = "none";
       } else if (statusResponse.status === "processing") {
         jobStatus.innerHTML = "Currently Processing";
       } else if (statusResponse.status === "queued") {
