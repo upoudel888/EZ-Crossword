@@ -11,7 +11,7 @@ viewAllBtn.addEventListener("click",()=>{
         viewAllBtn.lastElementChild.innerHTML = `Hide Answers`
     }else{
         viewAllBtn.firstElementChild.innerHTML = `<i class="fa-solid fa-eye"></i>`
-        viewAllBtn.lastElementChild.innerHTML = `Reveal Answers`
+        viewAllBtn.lastElementChild.innerHTML = `Reveal All`
     }
 })
 

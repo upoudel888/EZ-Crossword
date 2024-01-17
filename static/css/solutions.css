@@ -27,6 +27,11 @@
     background-color: var(--secondary-blue) !important;
 }
 
+.across-clue:hover,
+.down-clue:hover{
+    box-shadow: 0 0 4px var(--secondary-blue);
+}
+
 .reveal-btn{
     cursor: pointer;
     padding: 0.5rem;
