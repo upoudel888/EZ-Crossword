@@ -1,23 +1,14 @@
 /* glassmorphism implemented here */
 .grid-cell{
     cursor: auto;
+    filter: blur(4px);
 }
 .grid-cell:hover{
     box-shadow: none !important;
 }
-.grid-cell::after{
-    content: "";
-    width: 100%;
-    height: 100%;
-    position: absolute;
-    background: rgba( 255, 255, 255, 0.1 );
-    box-shadow: 0 8px 32px 0 rgba( 31, 38, 135, 0.37 );
-    backdrop-filter: blur( 4px );
-    -webkit-backdrop-filter: blur( 4px );
-    border: 1px solid rgba( 255, 255, 255, 0.18 );
-}
-.grid-cell.highlight-vert::after,.grid-cell.highlight-hor::after,.grid-cell.reveal::after{
-    content: none;
+
+.grid-cell.highlight-vert,.grid-cell.highlight-hor,.grid-cell.reveal{
+    filter: blur(0px);
 }
 
 .across-clue.highlight-vert,
