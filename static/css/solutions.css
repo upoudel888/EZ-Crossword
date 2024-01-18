@@ -16,14 +16,18 @@
     -webkit-backdrop-filter: blur( 4px );
     border: 1px solid rgba( 255, 255, 255, 0.18 );
 }
-.grid-cell.highlight::after,.grid-cell.reveal::after{
+.grid-cell.highlight-vert::after,.grid-cell.highlight-hor::after,.grid-cell.reveal::after{
     content: none;
 }
 
-.across-clue.highlight,
-.down-clue.highlight,
-.across-clue.highlight > *,
-.down-clue.highlight > * {
+.across-clue.highlight-vert,
+.down-clue.highlight-vert,
+.across-clue.highlight-vert > *,
+.down-clue.highlight-vert > *,
+.across-clue.highlight-hor,
+.down-clue.highlight-hor,
+.across-clue.highlight-hor > *,
+.down-clue.highlight-hor > * {
     background-color: var(--secondary-blue) !important;
 }
 

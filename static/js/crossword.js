@@ -121,9 +121,9 @@ export default class Crossword {
 
         currentlyHighlightingClue.style.cursor = "pointer"; // add event listener
         currentlyHighlightingClue.addEventListener("click", () => {
-          currentlyHighlightingClue.classList.toggle("highlight");
+          currentlyHighlightingClue.classList.toggle("highlight-hor");
           currentlyHighlightingCellsPos.forEach((pos2) => {
-            this.cells[pos2].classList.toggle("highlight");
+            this.cells[pos2].classList.toggle("highlight-hor");
           });
         });
       }
@@ -194,9 +194,9 @@ export default class Crossword {
         currentlyHighlightingClue.style.cursor = "pointer"; // add event listener
         currentlyHighlightingClue.addEventListener("click", () => {
           // remove every other highlight classes
-          currentlyHighlightingClue.classList.toggle("highlight");
+          currentlyHighlightingClue.classList.toggle("highlight-vert");
           currentlyHighlightingCellsPos.forEach((pos2) => {
-            this.cells[pos2].classList.toggle("highlight");
+            this.cells[pos2].classList.toggle("highlight-vert");
           });
         });
       }
