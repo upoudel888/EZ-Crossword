@@ -59,6 +59,22 @@
     
     <div class="hero">
         {% block hero %}
+        <div class="home-container">
+            <div class="text-and-buttons">
+                <div class="xlrg-text">Solve and Create Crosswords</div>
+                <div class="description-text">
+                    Introducing EZ-crossword, your one-stop solution for everything crosswords. Solve your difficult crosswords or generate one to get started.
+                </div>
+                <div class="hero-buttons">
+                    <a href={% url 'Solver' %}><button class="rounded-btn btn-filled">Solve</button></a>
+                    <a href={% url 'Generator' %}><button class="rounded-btn btn-hollow">Generate</button></a>
+                </div>
+            </div>
+            <div class="hero-img">
+                <img src={% static 'images/Background.svg'%} class = "home-illus illus-up fade-in-up" alt="Crossword Solver Illustration">
+                <img src={% static 'images/Background1.svg'%} class = "home-illus illus-down" alt="Crossword Solver Illustration">
+            </div>
+        </div>
         {% endblock hero %}
     </div>
     <footer>
