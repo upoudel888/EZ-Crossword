@@ -2,7 +2,6 @@ from django.shortcuts import render,HttpResponse,redirect
 from django.http import JsonResponse
 import json
 import puz
-import requests
 import tempfile
 
 def get_JSON_from_puz(puz_file):
@@ -65,7 +64,7 @@ def get_rows_and_clues(grid_data):
         for i in range(no_of_rows):
             temp = []
             for j in range(no_of_cols):
-                temp.append([grid_data['gridnums'][i * no_of_cols + j], grid_data['grid'][i * no_of_cols + j],0]) # prone to overflow wrrors
+                temp.append([grid_data['gridnums'][i * no_of_cols + j], grid_data['grid'][i * no_of_cols + j],'','']) # prone to overflow wrrors
             rows.append(temp)
 
         def separate_num_clues(clue):
@@ -197,34 +196,46 @@ def saveModifiedJson(request):
 def saveSolution(request):
     if( request.method == "POST"):
         received_solution = json.loads(request.body.decode('utf-8'))  # decoding byte data to a string
-        request.session['solution'] = received_solution[0]
-        request.session['evaluations'] = received_solution[1]
+        
+        request.session['solution1'] = received_solution[0]
+        request.session['evaluations1'] = received_solution[1]
+        request.session['solution2'] = received_solution[2]
+        request.session['evaluations3'] = received_solution[3]
 
         data = {"status": "Success", "message": "Solutions saved successfully"}
         return JsonResponse(data)
 
 
-def showSolution(request):
+def showSolution(request,model):
     grid_data = json.loads(request.session.get('json'))
 
     # Extracting the grid and clues from the JSON
     grid_rows,across_clues,down_clues = get_rows_and_clues(grid_data)
 
+    solutions1 = request.session.get("solution1")
+    solutions2 = request.session.get("solution2")
+    
+    evaluations1 = request.session.get('evaluations1')
+    evaluations2 = request.session.get('evaluations3')
+    
+    
+    print(solutions1)
+    print(solutions2)
 
-    solutions = request.session.get("solution")
-    evaluations = request.session.get('evaluations')
 
-
+    # making empty string for black cells
     context = {}
-    for i in range(0,len(solutions)):
+    for i in range(0,len(solutions1)):
         for j in range(0,len(grid_rows[i])):
-            grid_rows[i][j][2] = solutions[i][j] if solutions[i][j] != '' else " "
+            grid_rows[i][j][2] = solutions1[i][j] if solutions1[i][j] != '' else " "
+            grid_rows[i][j][3] = solutions2[i][j] if solutions2[i][j] != '' else " "
 
 
     context['grid_rows'] = grid_rows 
     context['across_clues'] = across_clues
     context['down_clues'] = down_clues
-    context['evalutions'] = evaluations
+    context['evaluations1'] = evaluations1
+    context['evaluations2'] = evaluations2
     context['user_uploaded_image'] = True if  grid_data.get("parsedFromImage") == "True" else False
 
     return render(request,"Solver/solutions.html",context=context)

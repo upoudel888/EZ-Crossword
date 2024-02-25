@@ -34,6 +34,8 @@ def generate(request):
         return render(request,"Generator/Generator.html")
     if(request.method == "POST"):
         row_value = int(request.POST.get('row'))
+        crossword_type = str(request.POST.get('crossword_type'))
+        print("Requested Crossword type was",crossword_type)
         grid_data = generate_grid(row_value)
         request.session['json'] = json.dumps(grid_data)
         return redirect("generation_result")

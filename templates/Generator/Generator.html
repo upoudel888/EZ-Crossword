@@ -1,13 +1,6 @@
-{% extends 'Home/base.html' %}
-
-{% load static %}
- 
-{% block css %} 
-<link rel="stylesheet" href={% static "css/solver.css"%}> 
-<link rel="stylesheet" href={% static "css/generator.css"%}> 
-{% endblock css %} 
-
-{% block hero %}
+{% extends 'Home/base.html' %} {% load static %} {% block css %} <link
+rel="stylesheet" href={% static "css/solver.css"%}> <link rel="stylesheet"
+href={% static "css/generator.css"%}> {% endblock css %} {% block hero %}
 <div class="get-started">
   <h1 class="emphasis-text">Generate Crosswords Using AI.</h1>
   <span class="">Choose Dimensions to Get Started</span>
@@ -15,33 +8,69 @@
 
 <div class="solver-hero">
   <div class="solver-upload-info">
-      <img src={% static 'images/generation.png'%} class = "solver-illus generator-illus" alt="Crossword Solver Illustration">
+    <img src={% static 'images/generation.png'%} class = "solver-illus
+    generator-illus" alt="Crossword Solver Illustration">
   </div>
-  <div class="form-container">     
-
-      <form action="/generator/" class = "form-inner" id="crosswordForm" method="POST">
-        {% csrf_token %}
-        <div class="drop-container">
-          <span class=" drop-title bold">Adjust Grid Dimensions </span>
-          Row : Col
-          <div class="input-fields-container">
-            <button type="button" class = "btn-dim" id="decrease">-</button>
-            <input type="number" id="row" name="row" min="4" max="21" value="4" readonly/>
-            <span>:</span>
-            <input type="number" id="col" name="col" min="4" max="21" value="4" readonly/>
-            <button type="button" class = "btn-dim" id="increase">+</button>
-          </div>
+  <div class="form-container">
+    <form
+      action="/generator/"
+      class="form-inner"
+      id="crosswordForm"
+      method="POST"
+    >
+      {% csrf_token %}
+      <div class="drop-container">
+        <span class="drop-title bold">Grid Dimensions </span>
+        Row : Col
+        <div class="input-fields-container">
+          <button type="button" class="btn-dim" id="decrease">-</button>
+          <input
+            type="number"
+            id="row"
+            name="row"
+            min="4"
+            max="21"
+            value="4"
+            readonly
+          />
+          <span>:</span>
+          <input
+            type="number"
+            id="col"
+            name="col"
+            min="4"
+            max="21"
+            value="4"
+            readonly
+          />
+          <button type="button" class="btn-dim" id="increase">+</button>
         </div>
-        <input class="custom-btn btn-11" type="submit" value="Generate" />
-      </form>
+        <p class="drop-title bold">Crossword Type</p>
+        <div class="radio-button-container">
+          <input
+            type="radio"
+            id="American"
+            name="crossword_type"
+            value="american"
+            checked
+          />
+          <label for="html">American</label><br/>
+          <input
+            type="radio"
+            id="British"
+            name="crossword_type"
+            value="british"
+          />
+          <label for="html">British</label>
+        </div>
+      </div>
+      <input class="custom-btn btn-11" type="submit" value="Generate" />
+    </form>
   </div>
 </div>
 
-
 <div class="generator-hero"></div>
-{% endblock hero %}
-
-{% block script %}
+{% endblock hero %} {% block script %}
 <script>
   document.getElementById("decrease").addEventListener("click", function () {
     decreaseValue("row");

@@ -108,9 +108,13 @@ export default class Crossword {
         currentlyHighlightingClue.lastElementChild.style.backgroundColor =
           "var(--secondary-blue-light)";
         for (let pos1 of currentlyHighlightingCellsPos) {
-          if (this.cells[pos1].classList.contains("wrong-cell")) {
+          if (this.cells[pos1].classList.contains("wrong-cell") ) {
             if (wrongEncounterCount[pos1] > 1) {
-              this.cells[pos1].style.backgroundColor = "var(--secondary-pink)";
+              if(this.cells[pos1].classList.contains("corrected-cell")){
+                this.cells[pos1].style.backgroundColor = "lightgreen";
+              }else{
+                this.cells[pos1].style.backgroundColor = "var(--secondary-pink)";
+              }
             } else {
               this.cells[pos1].style.backgroundColor = "white";
             }
@@ -413,7 +417,7 @@ export default class Crossword {
       body: JSON.stringify(gridJSON),
     });
 
-    const windowLocation = "/solver/solution/";
+    const windowLocation = "/solver/solution/firstPass";
     window.location.href = windowLocation;
   }
 

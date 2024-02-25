@@ -29,7 +29,7 @@
             <div class="grid">
                 {% for row_data in grid_rows %}
                 <div class="grid-row">
-                    {% for num,data,sol in row_data %}
+                    {% for num,data,sol,_ in row_data %}
                         {% if data == "." %}
                         <div class="grid-cell dead-cell">
                             <div class="cell-num"></div>

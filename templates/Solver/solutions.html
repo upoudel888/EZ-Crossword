@@ -18,14 +18,28 @@
                 <span class="emphasis-text">Puzzle Solution</span><br><br>
             {% else %}
                 <span class="emphasis-text">Evaluations</span> <br><br>
-                <span class = 'bold'>Letter Accuracy : {{ evalutions.correct_letters_percent|floatformat:"2" }}% </span>
-                ({{ evalutions.correct_letters }}/{{ evalutions.total_letters }}) <br>
-                <div class="dummy"></div>
-                <span class = 'bold'>Word Accuracy : {{ evalutions.correct_words_percent|floatformat:"2" }}% </span>
-                ({{ evalutions.correct_words }}/{{ evalutions.total_words }}) <br><br>
+                <div class="results">
+                    <div class="first-pass-results first-pass">
+                        <span class = 'bold'>Letter Accuracy : {{ evaluations1.correct_letters_percent|floatformat:"2" }}% </span>
+                        ({{ evaluations1.correct_letters }}/{{ evaluations1.total_letters }}) <br>
+                        <div class="dummy"></div>
+                        <span class = 'bold'>Word Accuracy : {{ evaluations1.correct_words_percent|floatformat:"2" }}% </span>
+                        ({{ evaluations1.correct_words }}/{{ evaluations1.total_words }}) <br>
+                    </div>
+                    <div class="second-pass-results second-pass">
+                        <span class = 'bold'>Letter Accuracy : {{ evaluations2.correct_letters_percent|floatformat:"2" }}% </span>
+                        ({{ evaluations2.correct_letters }}/{{ evaluations2.total_letters }}) <br>
+                        <div class="dummy"></div>
+                        <span class = 'bold'>Word Accuracy : {{ evaluations2.correct_words_percent|floatformat:"2" }}% </span>
+                        ({{ evaluations2.correct_words }}/{{ evaluations2.total_words }}) <br>
+                    </div>
+                </div>
+                <br><br>
+
                 {% endif %}
             <a href={% url 'Solver' %}><button class="custom-btn proceed-button btn-11">Solve Next</button></a>
         </div>
+
         <span class="note"> <span class = 'bold'>Note : </span> 
         Click on the clue to reveal its respective answer.
         </span>
@@ -36,28 +50,44 @@
     </div>
 
     <div class="crossword">
-        
         <div class="grid-and-options">
             <div class="grid">
                 {% for row_data in grid_rows %}
                 <div class="grid-row">
-                    {% for num,data,sol in row_data %}
+                    {% for num,data,sol1,sol2 in row_data %}
                         {% if data == "." %}
                         <div class="grid-cell dead-cell">
                             <div class="cell-num"></div>
                             <div class="cell-data"></div>
                         </div>
                         {% else %}
-                            <div class="grid-cell hide-for-answer {% if user_uploaded_image != True and data != sol %}wrong-cell{% endif %}" >
+                            <div class="grid-cell hide-for-answer
+                             {% if user_uploaded_image != True and data != sol1 %}
+                                {% if data != sol2%}
+                                    wrong-cell
+                                {%else%}
+                                    wrong-cell corrected-cell
+                                {%endif%}
+                            {% endif %}" >
                                 <div class="cell-num">
                                     {% if num != 0 %} {{num}}{% endif %}
                                 </div>
-                                <div class="cell-data hidden">{{sol}}</div>
+                                <div class="cell-data hidden">
+                                    <span class="first-pass">{{sol1}}</span>
+                                    <span class="second-pass">{{sol2}}</span>    
+                                </div>
                             </div>
                         {% endif %}
                     {% endfor %}
                 </div>     
                 {% endfor %}
+            </div>
+            <div class="grid-change-options">
+                <label class="switch">
+                    <input type="checkbox" class="checkbox">
+                    <span class="slider round"></span>
+                </label>
+                <span>View First Pass Solution</span>
             </div>
         </div>
         {% comment %} clues {% endcomment %}

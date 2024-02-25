@@ -6,5 +6,5 @@ urlpatterns = [
     path("verify/",view = views.verify, name="Verify"),
     path("save-solution/",view = views.saveSolution, name="SaveSolution"),
     path("save-json/",view = views.saveModifiedJson, name="SaveJSON"),
-    path("solution/",view=views.showSolution,name="Solution")
+    path("solution/<str:model>/",view=views.showSolution,name="Solution")
 ]
