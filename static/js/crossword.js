@@ -364,8 +364,12 @@ export default class Crossword {
       } else if (statusResponse.status === "queued") {
         jobStatus.innerHTML = `Enqueued in ${statusResponse.queue_status["index"]} / ${statusResponse.queue_status["length"]}`;
       } else if (statusResponse.status === "error") {
-        console.error("There was an error processing the task.");
-        clearInterval(checkInterval);
+        alert("Generation process failed for some reasons");
+        clearInterval(checkInterval); // stoppping the polling requests
+        clearInterval(timerInterval); // stopping the timer
+
+        const windowLocation = "/solver/";
+        window.location.href = windowLocation;
       }
     };
 

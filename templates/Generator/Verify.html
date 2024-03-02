@@ -7,15 +7,23 @@
 {% endblock css %}
 
 {% block script %}
+<script src={% static 'js/fillClues.js' %}  type="module" defer></script>
+
 {% endblock script %}
 
 {% block hero %}
-    
     <div class="note-ribbon">
         <div class="special-note">
-            <span class="emphasis-text"> Crossword Generated. </span> <br> <br>
-           Download JSON file <br><br>
-            <a href="{% url 'download_json' %}" class="href"><button class="custom-btn proceed-button btn-11">Download</button></a>
+            <span class="emphasis-text"> Confirm Grid </span> <br> <br>
+            <div class="btn-container">
+                <button class="custom-btn fill-button btn-11">Fill Clues</button>
+                <form id="myForm" action="{% url 'Generator' %}" method="post">
+                    {% csrf_token %}
+                    <input type="hidden" name="row" value={{crossword_dimension}}>
+                    <input type="hidden" name="crossword_type" value={{crossword_type}}>
+                    <button type="submit" class="custom-btn proceed-button btn-11">Regenerate</button>
+                </form>
+            </div>
         </div>
     </div>
     
@@ -35,32 +43,11 @@
                                 <div class="cell-num">
                                     {% if num != 0 %} {{num}}{% endif %}
                                 </div>
-                                <div class="cell-data">{{data}}</div>
+                                <div class="cell-data"></div>
                             </div>
                         {% endif %}
                     {% endfor %}
                 </div>     
-                {% endfor %}
-            </div>
-        </div>
-        {% comment %} clues {% endcomment %}
-        <div class="clues">
-            <div class="across-clues">
-                <div class="clue-head-title" > Across </div>
-                {% for num,clue in across_clues %}
-                    <div class="across-clue across-clue-{{num}}">
-                        <div class="clue-num"> {{num}} </div>
-                        <div class="clue-text" > {{clue}} </div>
-                    </div>
-                    {% endfor %}
-                </div>
-                <div class="down-clues">
-                    <div class="clue-head-title" > Down </div>
-                    {% for num,clue in down_clues %}
-                        <div class="down-clue down-clue-{{num}}">
-                            <div class="clue-num"> {{num}} </div>
-                            <div class="clue-text">{{clue}} </div>
-                        </div>
                 {% endfor %}
             </div>
         </div>

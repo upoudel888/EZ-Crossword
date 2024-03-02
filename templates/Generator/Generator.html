@@ -54,7 +54,7 @@ href={% static "css/generator.css"%}> {% endblock css %} {% block hero %}
             value="american"
             checked
           />
-          <label for="html">American</label><br/>
+          <label for="html">American</label><br />
           <input
             type="radio"
             id="British"
@@ -72,6 +72,35 @@ href={% static "css/generator.css"%}> {% endblock css %} {% block hero %}
 <div class="generator-hero"></div>
 {% endblock hero %} {% block script %}
 <script>
+  let delta = 1;
+
+  let american = document.getElementById("American");
+  let british = document.getElementById("British");
+  let upperBound = 21;
+  let lowerBound = 4;
+
+  function checkAndChange(){
+    if (british.checked === true) {
+      delta = 2;
+      lowerBound = 5;
+      document.getElementById("row").value = 5;
+      document.getElementById("col").value = 5;
+    } else {
+      delta = 1;
+      lowerBound = 4;
+      document.getElementById("row").value = 4;
+      document.getElementById("col").value = 4;
+    }
+  }
+
+  american.addEventListener("change", function () {
+    checkAndChange();
+  });
+
+  british.addEventListener("change", function () {
+    checkAndChange();
+  });
+
   document.getElementById("decrease").addEventListener("click", function () {
     decreaseValue("row");
     decreaseValue("col");
@@ -84,15 +113,15 @@ href={% static "css/generator.css"%}> {% endblock css %} {% block hero %}
 
   function decreaseValue(id) {
     var currentValue = parseInt(document.getElementById(id).value, 10);
-    if (!isNaN(currentValue) && currentValue > 4) {
-      document.getElementById(id).value = currentValue - 1;
+    if (!isNaN(currentValue) && currentValue > lowerBound) {
+      document.getElementById(id).value = currentValue - delta;
     }
   }
 
   function increaseValue(id) {
     var currentValue = parseInt(document.getElementById(id).value, 10);
-    if (!isNaN(currentValue) && currentValue < 21) {
-      document.getElementById(id).value = currentValue + 1;
+    if (!isNaN(currentValue) && currentValue < upperBound) {
+      document.getElementById(id).value = currentValue + delta;
     }
   }
 </script>

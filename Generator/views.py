@@ -1,6 +1,7 @@
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 from django.shortcuts import redirect, render
 from .grid_generator import generate_grid
+from .grid_generator1 import CrosswordGenerator
 import json
 # Create your views here.
 def get_rows_and_clues(grid_data):
@@ -28,6 +29,12 @@ def get_rows_and_clues(grid_data):
     except:
         return [],[],[]
 
+def saveSolution(request):
+    if( request.method == "POST"):
+        received_solution = json.loads(request.body.decode('utf-8'))  # decoding byte data to a string
+        request.session['json'] = json.dumps(received_solution)
+        return JsonResponse(received_solution)
+    
 
 def generate(request):
     if(request.method == "GET"):
@@ -36,16 +43,45 @@ def generate(request):
         row_value = int(request.POST.get('row'))
         crossword_type = str(request.POST.get('crossword_type'))
         print("Requested Crossword type was",crossword_type)
-        grid_data = generate_grid(row_value)
-        request.session['json'] = json.dumps(grid_data)
-        return redirect("generation_result")
-    
+        # CHANGE HERE
+        crossword_generator = CrosswordGenerator(grid_size = row_value, crossword_type = crossword_type, black_factor = 3) # 'american'
+        crossword_grid = crossword_generator.generate_crossword()
+        request.session['json'] = json.dumps(crossword_grid)
+        request.session['crossword_type'] = crossword_type
+        request.session['dim'] = row_value
+        return redirect("verify_result")
+
+def verifyGeneratedGrid(request):
+        if(request.method == "GET"):
+            context = {}
+            grid_data = json.loads(request.session.get("json"))
+            print(grid_data)
+            if(grid_data):
+                grid_rows,across_clues,down_clues = get_rows_and_clues(grid_data)
+                print(across_clues,down_clues)
+                
+                context['crossword_type'] = request.session.get('crossword_type')
+                context['crossword_dimension'] = request.session.get('dim')
+                context['grid_rows'] = grid_rows 
+                context['across_clues'] = across_clues
+                context['down_clues'] = down_clues
+                context['across_nums'] = grid_data['across_nums']
+                context['down_nums'] = grid_data['down_nums']
+                context['json'] = json.dumps(grid_data)
+                context['solutions'] = 0
+                return render(request,"Generator/Verify.html",context=context)
+        else:
+            return HttpResponse("The Generator did not generate the puzzle.")
+        
 def showGeneratedCrossword(request):
     if(request.method == "GET"):
         context = {}
         grid_data = json.loads(request.session.get("json"))
+        print(grid_data)
         if(grid_data):
             grid_rows,across_clues,down_clues = get_rows_and_clues(grid_data)
+            print(across_clues,down_clues)
+            
             context['grid_rows'] = grid_rows 
             context['across_clues'] = across_clues
             context['down_clues'] = down_clues
