@@ -172,7 +172,7 @@ def verify(request):
             for i in range(15):
                 temp = []
                 for j in range(15):
-                    temp.append((nums[i][j],"A",0))
+                    temp.append((nums[i][j],"A","A",0))
                 rows.append(temp)
             grid_rows = rows
 
@@ -218,10 +218,8 @@ def showSolution(request,model):
     evaluations1 = request.session.get('evaluations1')
     evaluations2 = request.session.get('evaluations3')
     
-    
     print(solutions1)
     print(solutions2)
-
 
     # making empty string for black cells
     context = {}
@@ -232,10 +230,12 @@ def showSolution(request,model):
 
 
     context['grid_rows'] = grid_rows 
+    context['json'] = request.session.get('json') 
     context['across_clues'] = across_clues
     context['down_clues'] = down_clues
     context['evaluations1'] = evaluations1
     context['evaluations2'] = evaluations2
     context['user_uploaded_image'] = True if  grid_data.get("parsedFromImage") == "True" else False
-
+    context['showButtons'] = True if model=="firstPass" else False
+    
     return render(request,"Solver/solutions.html",context=context)
