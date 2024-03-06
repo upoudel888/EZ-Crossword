@@ -36,15 +36,15 @@
                     </div>
                 </div>
                 <br/>
+                {% endif %}
                 {% if showButtons%}
                     <span class="note"> <span class = 'bold'>Note : Refining Takes a While ! </span><br/>
                     Click on Refine to futher improve the solution.
                     </span>
                     <br/><br/>
                     <button class="custom-btn proceed-button btn-11">Refine</button>
-                    {% endif %}
+                {% endif %}
                 <a href={% url 'Solver' %}><button class="custom-btn proceed-button btn-11">Solve Next</button></a>
-            {% endif %}
            
         </div>
 

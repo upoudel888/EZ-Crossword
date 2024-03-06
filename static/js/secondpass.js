@@ -73,7 +73,7 @@ refineBtn.addEventListener("click", async () => {
   }, 1000);
 
   // sending solve request to the solver
-  const response = await fetch("http://127.0.0.1:7860/solve", {
+  const response = await fetch("https://ujjwal123-second-pass.hf.space/solve", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -85,7 +85,7 @@ refineBtn.addEventListener("click", async () => {
 
   const checkStatus = async () => {
     const response = await fetch(
-      `http://127.0.0.1:7860/result/${jsonResponse.job_id}`
+      `https://ujjwal123-second-pass.hf.space/result/${jsonResponse.job_id}`
     );
     const statusResponse = await response.json();
 
